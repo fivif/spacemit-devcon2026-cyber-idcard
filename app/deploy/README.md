@@ -290,7 +290,7 @@ CP1500 USB 卡片打印于 2026-10-12 已接入，使用 54×86mm 耗材。
 `POST /api/operator/print`，可选择 `watermarked` / `clean` 版本并使用新的任务键重复打印。
 照片同时提供 `/api/photo/<token>.jpg`（带标识）与
 `/api/photo/<token>.clean.jpg`（无标识）两个下载入口；状态不明时先查询同一作业，不要换键再次提交。
-详细验收记录见项目 `docs/CP1500-54x86实测记录-20261012.md`。
+详细验收记录见项目 `内部文档`。
 
 ```bash
 systemctl status devcon-booth --no-pager      # 服务活着吗

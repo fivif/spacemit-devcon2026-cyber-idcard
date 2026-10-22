@@ -8,7 +8,7 @@
  *     排队状态默认每 2 秒轮询 GET /api/queue/<id>（带 X-Queue-Session），到号显示
  *     「开始拍摄」按钮 → POST /api/queue/<id>/start（带同一拍摄同意）。
  *
- * 关键契约（与 docs/spec/自动流程规格-v1.md、T-2/T-12/T-20 一致）：
+ * 关键契约（与 自动流程规格 v1（内部文档）、T-2/T-12/T-20 一致）：
  * - 风格目录不硬编码数量：GET /api/styles（T-16 新增）→ 失败回退现有
  *   GET /api/aigc/styles → 再失败用内嵌静态清单（最后退路，仅为降级展示）；
  * - 轮播只改自己的展示区，绝不触碰页面表单/画廊状态（交互控件不因轮播重置）；
@@ -388,7 +388,7 @@
   }
 
   /* 取图链接只认令牌。QueueEntry 按规格不带 photo_token（photo_token 属于
-     CaptureJob，见 docs/spec/自动流程规格-v1.md 的 Data models），所以成片就绪后
+     CaptureJob，见 自动流程规格 v1（内部文档） 的 Data models），所以成片就绪后
      要另外问一次 GET /api/job/<queue_id>（带 X-Queue-Session）才拿得到令牌。
      只回 /p/<token>，不把令牌本身暴露给页面其它部分。缺令牌时返回 ""。 */
   function pickupPathFromJob(payload) {

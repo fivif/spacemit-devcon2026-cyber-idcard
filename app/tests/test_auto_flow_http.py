@@ -4,7 +4,7 @@
 运行（项目根目录）：
     python3 -m unittest app.tests.test_auto_flow_http -v
 
-规格依据：`docs/spec/自动流程规格-v1.md` 的三条队列路由契约与
+规格依据：`自动流程规格 v1（内部文档）` 的三条队列路由契约与
 `app/auto_flow/http_handlers.py` 的接线语义（错误优先级、会话私有性）。
 
 测试设计（逐条对应 T-3 验收）：

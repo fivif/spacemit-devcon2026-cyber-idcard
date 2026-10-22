@@ -2,10 +2,10 @@
 """ConsentService：用途隔离的拍摄/外置同意签发、持久化、撤回与预约绑定（T-12）。
 
 规格依据：
-- `docs/spec/自动流程规格-v1.md`：Interfaces（``validate`` / ``record`` 签名）、
+- `自动流程规格 v1（内部文档）`：Interfaces（``validate`` / ``record`` 签名）、
   Data models（``ConsentRecord``）、Security（外置同意独立、同意绑定）、
   Restart and recovery；
-- `docs/spec/仓库契约-v1.md` §4「同意令牌链」：现有
+- `仓库契约 v1（内部文档）` §4「同意令牌链」：现有
   ``ConsentBook.grant(kind)`` 签发 ``uuid.uuid4().hex``（32 位十六进制）令牌、
   内存字典、TTL ``BOOTH_CONSENT_TTL`` 默认 600s。本模块延续同一令牌格式与默认
   TTL（环境变量同名，见 ``default_ttl_seconds``），但改为可持久化、可绑定。

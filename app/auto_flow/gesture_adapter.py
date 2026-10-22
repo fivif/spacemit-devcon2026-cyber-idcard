@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """T-6 手势适配器：默认禁用实现与可注入替换点。
 
-规格依据：`docs/spec/自动流程规格-v1.md`「Components / GestureAdapter」「FR-6」；
+规格依据：`自动流程规格 v1（内部文档）`「Components / GestureAdapter」「FR-6」；
 接口形状与 ``app.auto_flow.ports.GesturePort`` 一致（status / observe / stop）。
 
 安全立场（当前唯一允许的状态 = 禁用）：

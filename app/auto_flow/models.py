@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """auto_flow 共享数据模型：Queue、同意、作业、健康与打印（T-1）。
 
-规格依据：`docs/spec/自动流程规格-v1.md`「Data models」。本文件是 T-2/T-6/T-8/
+规格依据：`自动流程规格 v1（内部文档）`「Data models」。本文件是 T-2/T-6/T-8/
 T-9/T-12/T-13/T-14/T-15/T-20 的公共 import 依赖：类型名与字段名与规格逐字一致，
 不得改名；序列化格式为 JSON 友好的 snake_case 字典（可直接进 API 响应与持久化文件）。
 

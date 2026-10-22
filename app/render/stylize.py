@@ -12,7 +12,7 @@
 ``natural_metrics_ok()``。
 
 暗调那一套仍然在，现在是 card.py 六张卡与掩码预览的底子
-（knowledge/03 §1/§2/§11）
+（视觉规格 §1/§2/§11）
 ------------------------
 **低照度人像的物理规律**：人物受的是轮廓光/踢光，脸在阴影里，只有少量镜面高光。
 所以人像调子先做一次低照度压缩：
@@ -41,13 +41,13 @@ import numpy as np
 from PIL import Image, ImageFilter
 
 # --------------------------------------------------------------------------
-# 冻结接口（docs/spec/系统规格-v2.md §11.2）
+# 冻结接口（系统规格 v2（内部文档） §11.2）
 # --------------------------------------------------------------------------
 
 # **只有原色一档**。早期还有 highcontrast / mono / dieline / halftone
 # 四档，现场判定：证件照就该是本人的颜色，
 # 四档反而把人变成了符号；且选项多了影响拍摄节奏。
-# 这四档已从代码里删除（旧版资产清单已并入 docs/）。
+# 这四档已从代码里删除（旧版资产清单已并入 内部文档）。
 STYLES = ("natural",)
 
 STYLE_LABELS = {"natural": "原色"}
@@ -56,7 +56,7 @@ BRAND = (178, 228, 13)          # #B2E40D 酸柠绿（spacemit.com 品牌色）
 BRAND_SOFT = (208, 238, 144)    # #D0EE90
 
 # 抠像成片里，人至少要占窗口这么大一块 —— 低于它就是「框里其实没人」
-# （实测：真人是 0.30~0.49，误检碎块是 0.0000；见 knowledge/04 坑 27）
+# （实测：真人是 0.30~0.49，误检碎块是 0.0000；见 踩坑记录 坑 27）
 CUTOUT_MIN_COVER = 0.02
 
 MEAN_RANGE = (15.0, 35.0)          # 暗调窗口：card.py 的卡片还在用
@@ -472,7 +472,7 @@ def calibrate_dark(arr: np.ndarray, *, mean_target: float = 25.0, hi_lo: float =
 
 
 def dark_metrics(image: Image.Image) -> dict:
-    """验收指标（knowledge/03 §11）。细节能量用高频 |L − 高斯(σ=3)|，不是裸标准差。"""
+    """验收指标（视觉规格 §11）。细节能量用高频 |L − 高斯(σ=3)|，不是裸标准差。"""
     rgb = np.asarray(image.convert("RGB"), np.float32)
     L = luma(rgb)
     Lp = np.asarray(image.convert("L"), np.float32)

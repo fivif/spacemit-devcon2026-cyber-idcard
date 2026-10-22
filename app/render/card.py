@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """成片总装 —— SpacemiT DevCon 2026 · 装置5「赛博开发者证件照」· T-3
 
-两档输出（docs/spec/系统规格-v2.md §8 / §11.3）::
+两档输出（系统规格 v2（内部文档） §8 / §11.3）::
 
     1000x1250  竖版 4:5   主输出（社交友好），版式为 T-3 新造
     1600x1000  横版 8:5   沿用 cards3 版面：人像贴进照片区
@@ -13,7 +13,7 @@
 两条硬纪律
 ----------
 1. **姓名不留空**：拿不到姓名用 ``DEVELOPER`` 占位 —— 空一块比占位更像故障
-   （knowledge/03 §7）。
+   （视觉规格 §7）。
 2. **几何守护**：所有文字与块的真实包围盒（PIL textbbox）都要落在画布内、
    且不进照片区。越界不抛异常，但会记进 ``guard_report()``，由
    ``tools/make_samples.py`` 判定非零退出 —— 越界 = 现场出废片。
@@ -39,7 +39,7 @@ except ImportError:        # 作为平铺模块导入（sys.path 指向 app/rend
     import watermark        # type: ignore
 
 # --------------------------------------------------------------------------
-# 冻结接口（docs/spec/系统规格-v2.md §11.3）
+# 冻结接口（系统规格 v2（内部文档） §11.3）
 # --------------------------------------------------------------------------
 
 CARD_NAMES = ("blueprint", "schematic", "terminal", "datapath", "logo", "timeline")
@@ -70,7 +70,7 @@ CARD_LABELS_EN = {
     "logo": ("BRAND BOARD", "LOGO"), "timeline": ("TIMELINE", "TIMELINE"),
 }
 
-# knowledge/03 §4 的六套暗调板（纸色 / 发光主色 / 副发光）
+# 视觉规格 §4 的六套暗调板（纸色 / 发光主色 / 副发光）
 CARD_PALETTE = {
     "blueprint": {"paper": (9, 14, 26), "glow": (58, 214, 255), "glow2": (26, 92, 150)},
     "schematic": {"paper": (14, 12, 10), "glow": (255, 176, 84), "glow2": (140, 82, 30)},
@@ -93,7 +93,7 @@ BRAND_DIR = os.path.join(_APP, "assets", "brand")
 
 # 照片区（比例坐标）与守护外扩
 PHOTO_BOX_H = (0.040, 0.455, 0.455, 0.975)          # cards3 版面（横版）
-KEEPOUT_H = (0.028, 0.443, 0.467, 0.987)            # knowledge/03 §3
+KEEPOUT_H = (0.028, 0.443, 0.467, 0.987)            # 视觉规格 §3
 PHOTO_BOX_V = (0.062, 0.106, 0.612, 0.656)          # 竖版照片窗（4:5，主输出）
 
 NAME_FALLBACK = "DEVELOPER"

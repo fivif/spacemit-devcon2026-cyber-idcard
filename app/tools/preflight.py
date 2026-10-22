@@ -614,7 +614,7 @@ def shoot_ai_checks(report: Report, health: dict, source: str) -> None:
         else:
             report.add(group, "WARN", "检测模型未加载", "预览人形框 / 无分割时的兜底会退化")
     # 抠像模型慢加载（第一次拍摄才建会话），所以这里只认 worker 报的默认路径；
-    # 它在 CPU 上是**设计如此**，不是降级 —— 上 AI 核会让进程硬崩（knowledge/04 坑 9）。
+    # 它在 CPU 上是**设计如此**，不是降级 —— 上 AI 核会让进程硬崩（踩坑记录 坑 9）。
     if health.get("matte_model"):
         report.add(group, "PASS", "抠像模型（CPU）",
                    "%s（device=%s）" % (health.get("matte_model"), health.get("matte_device")))

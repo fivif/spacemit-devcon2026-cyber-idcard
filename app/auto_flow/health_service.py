@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """组件健康聚合（T-20）：帧新鲜度优先的相机健康 + 六组件系统快照。
 
-规格依据：`docs/spec/自动流程规格-v1.md` 的「Data models」（SystemHealth /
+规格依据：`自动流程规格 v1（内部文档）` 的「Data models」（SystemHealth /
 ComponentHealth）、「Error handling」（CAMERA_UNAVAILABLE = 相机健康检查拿不到帧）
 与 T-20 任务合同。
 

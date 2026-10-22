@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """T-1 推理 worker 测试：AI 核预算 + 哨兵协议 + 诚实降级。
 
-对应 docs/spec/系统规格-v2.md 里 T-1 的四条 acceptance：
+对应 系统规格 v2（内部文档） 里 T-1 的四条 acceptance：
   a) health 返回 ep=true 且 ep_threads=4（无竞争时）；
   b) 故意申请超量核后 health 返回 ep=false 且带 fallback 原因，不得冒充 AI 核；
   c) 连续 50 次 seg/det 调用无崩溃、且没有不带 @@J 前缀的协议行（哨兵回归）；

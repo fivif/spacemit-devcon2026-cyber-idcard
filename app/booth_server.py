@@ -1,9 +1,9 @@
 """现场控制面：HTTP 服务 + 拍摄编排 + 合规门禁。
 
 一只进程干三件事：抓帧（camera.py）、调推理子进程（infer_client.py）、合成成片（render/）。
-推理为什么必须另起进程：cv2 与 spacemit_ort 同进程会崩（docs/spec/系统规格-v2.md §1.1）。
+推理为什么必须另起进程：cv2 与 spacemit_ort 同进程会崩（系统规格 v2（内部文档） §1.1）。
 
-路由契约冻结在 docs/spec/系统规格-v2.md §4。纯标准库（http.server），零 pip 安装。
+路由契约冻结在 系统规格 v2（内部文档） §4。纯标准库（http.server），零 pip 安装。
 
 ★ 三条硬约束（都来自真机实测，不是洁癖）：
   1) 未同意不得拍摄：/api/capture 没有有效 consent 一律 403，测试里锁死；
@@ -2210,7 +2210,7 @@ class Booth:
 
         公网只能看到这一个端点，所以它**不能**顺手把编号清单、相机状态、
         磁盘余量带出去 —— /api/state 里那些东西一公开，等于把"现场还有哪些照片"
-        直接摊给外面（编号还是连号的，见 docs/07）。
+        直接摊给外面（编号还是连号的，见 展台设计文档）。
         """
         record = self.store.by_token(token)
         if record is None or record.extra.get("tombstone"):
@@ -3254,7 +3254,7 @@ class Booth:
 # ---- 公网取图地址（操作员面板上填）----------------------------------------
 # 现场默认跑局域网 IP。但明文 HTTP 的 IP 地址不是「安全上下文」，实测
 # isSecureContext=false → navigator.share / navigator.clipboard 全是 undefined，
-# 取图页上「分享」这类按钮点了等于没点（见 docs/07）。
+# 取图页上「分享」这类按钮点了等于没点（见 展台设计文档）。
 # 指定一个公网 HTTPS 域名（K3 走隧道暴露，见自建反向代理 / 隧道）之后，
 # 系统分享面板才可用 —— 那是唯一能真正跳到小红书/微信发布页的通道。
 _SETTINGS_CACHE: dict | None = None

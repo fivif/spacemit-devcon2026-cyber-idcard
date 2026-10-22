@@ -8,7 +8,8 @@
 |---|---|
 | 数据清空 | `app/data/` 只留空目录与 `.gitkeep`；无照片、掩码、二维码、`records.jsonl`、`counter.json` |
 | 敏感信息 | 内网设备 IP → `192.0.2.10`（RFC 5737 测试段）；域名 → `pick.example.com` / `photo.example.com`；服务器 IP → `198.51.100.20`；设备密码 → `<DEVICE_PASSWORD>`；个人绝对路径 → `~/devcon2026` |
-| 规划流水线 | `.plan/`（`state.json`、`run-log.jsonl`、`evidence/`、历史版本）整体不带入；只有三份规格进 `docs/spec/` |
+| 规划流水线 | `.plan/`（`state.json`、`run-log.jsonl`、`evidence/`、历史版本）整体不带入 |
+| 开发记录 | `docs/`（物料、SOP、合规、展台、规格、提示词）与 `knowledge/`（知识库）整体不入库，只留在内部 |
 | 早期原型 | 浅色版原型目录整体移除（仓库只保留 `app/` 一份现场实现），相关文档改为「未随开源发布」表述 |
 | 一次性探针 | 根目录 100+ 个 `*.py` 探测脚本、`app/tools` 里的临时校验脚本、`app/tests` 里的一次性核查脚本未带入 |
 | 模型 | `app/assets/models/` 与 `app/assets/video/` 只留 `.gitkeep`；运行时按 `BOOTH_*_MODEL` 指向外部路径 |
@@ -44,7 +45,7 @@
 ### 关于 AIGC 渠道
 
 仓库里已经没有任何真实渠道：没有网关地址、没有密钥、没有私有型号名。
-启用风格化需要你自己接一个 OpenAI 兼容渠道，两种方式写在 `docs/魔搭模型接入.md` 开头：
+启用风格化需要你自己接一个 OpenAI 兼容渠道，两种方式见根 `README.md` 的「可选：AIGC 风格化渠道」：
 
 1. 操作员面板「模型渠道」逐个填 `base_url` / `api_key` / 模型名；
 2. 部署时设 `BOOTH_AIGC_BASE_URL` 作为默认地址。
@@ -55,7 +56,7 @@
 
 1. **许可与版权主体**：当前 `LICENSE` 为 Apache-2.0 全文，`NOTICE` 写 `Copyright 2026 SpacemiT`。若主体名称不同，改 `NOTICE` 第一段即可。
 2. **品牌素材**：`app/assets/brand/`、`app/assets/bg/`、`app/assets/cards/` 属 SpacemiT 视觉资产，已在 `NOTICE` 声明仅用于活动语境；对外发布需品牌方确认。
-3. **合规文案**：`docs/04-合规与现场文案.md` 与拍摄告知文案需法务确认后才能作为公开示例。
+3. **合规文案**：`开发文档` 与拍摄告知文案需法务确认后才能作为公开示例。
 4. **字体**：`app/assets/fonts/NotoSansCJK-Bold.ttc` 为 SIL OFL 1.1，允许再分发，需保留 `OFL.txt`（已在位）。
 
 ## 五、建议的发布动作（由你自己执行）

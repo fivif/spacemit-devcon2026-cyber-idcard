@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """队列持久化适配（T-1）。
 
-规格依据：`docs/spec/自动流程规格-v1.md`「Restart and recovery」「File and module
-layout」与 `docs/spec/仓库契约-v1.md` §3 存储契约：
+规格依据：`自动流程规格 v1（内部文档）`「Restart and recovery」「File and module
+layout」与 `仓库契约 v1（内部文档）` §3 存储契约：
 
 - 状态只写 `BOOTH_DATA` 下的**新**子目录/新文件：`<BOOTH_DATA>/auto_flow/queue.json`
   （测试传临时目录即为数据根）。绝不触碰 `records.jsonl`、`counter.json`、

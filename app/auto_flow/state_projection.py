@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """公共状态投影（T-20）：把内部排队 / 拍摄 / 组件状态压成可公开的脱敏字段。
 
-规格依据：`docs/spec/自动流程规格-v1.md` 的「External HTTP and page contracts」
+规格依据：`自动流程规格 v1（内部文档）` 的「External HTTP and page contracts」
 （`/api/state`、`/api/overlay.json` 不得暴露同意值、可选个人信息、取图令牌与完整
 `queue_id`）与 T-20 任务合同。
 

@@ -2,7 +2,7 @@
 """HTTP 队列处理器纯逻辑层（T-2）：POST /api/queue、GET /api/queue/<queue_id>、
 POST /api/queue/<queue_id>/start。
 
-规格依据：`docs/spec/自动流程规格-v1.md` 的 External HTTP and page contracts
+规格依据：`自动流程规格 v1（内部文档）` 的 External HTTP and page contracts
 （三条路由的成功/错误表）、Error handling、Security（队列访问私有性）与
 Configuration（BOOTH_QUEUE_ENABLED）；HTTP 接线在 `app/booth_server.py`。
 

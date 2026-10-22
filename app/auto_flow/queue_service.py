@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """QueueService：排队状态机、幂等提交与拍摄位独占（T-1）。
 
-规格依据：`docs/spec/自动流程规格-v1.md` 的 Components（QueueService 职责）、
+规格依据：`自动流程规格 v1（内部文档）` 的 Components（QueueService 职责）、
 Interfaces（类签名逐字）、Data models、Error handling、Restart and recovery。
 
 核心保证（T-1 验收）：

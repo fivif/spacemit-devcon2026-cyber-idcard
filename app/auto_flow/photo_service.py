@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """取图照片服务：令牌寻址的持久化、原子失效与打印取消（T-7）。
 
-规格依据：`docs/spec/自动流程规格-v1.md`「Components · PhotoService」「Data models ·
+规格依据：`自动流程规格 v1（内部文档）`「Components · PhotoService」「Data models ·
 PhotoRecord」「Interfaces · Internal module APIs」「Error handling」「Security」；
-任务合同 `docs/spec/自动流程规格-v1.md` T-7。
+任务合同 `自动流程规格 v1（内部文档）` T-7。
 
 文件布局（**根目录参数化**：生产由接线方传真实数据根，测试传系统临时目录）::
 

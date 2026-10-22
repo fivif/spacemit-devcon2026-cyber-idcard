@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """auto_flow 稳定错误码、HTTP 状态映射与默认中文文案（T-11）。
 
-规格依据：`docs/spec/自动流程规格-v1.md` 的「Error handling」与
+规格依据：`自动流程规格 v1（内部文档）` 的「Error handling」与
 「External HTTP and page contracts」。
 
 - 「Error handling」表中的错误码为本模块权威集合，名称与规格逐字一致，

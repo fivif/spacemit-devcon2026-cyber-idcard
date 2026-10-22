@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """同意处理纯逻辑层（T-12）：POST /api/consent 与队列提交/开始的同意校验。
 
-规格依据：`docs/spec/自动流程规格-v1.md`（路由表 `POST /api/consent`、
+规格依据：`自动流程规格 v1（内部文档）`（路由表 `POST /api/consent`、
 `POST /api/queue/<queue_id>/start`；Security「同意绑定」）与任务 T-12。
 
 边界与约定：

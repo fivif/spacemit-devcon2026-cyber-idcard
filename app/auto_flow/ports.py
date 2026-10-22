@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """auto_flow 可替换端口协议与抓帧结果（T-14）。
 
-规格依据：`docs/spec/自动流程规格-v1.md`「Interfaces」「Testing strategy」「File and module layout」。
+规格依据：`自动流程规格 v1（内部文档）`「Interfaces」「Testing strategy」「File and module layout」。
 
 - 本模块只定义端口（typing.Protocol）与抓帧结果值对象 ``CapturedFrame``；组件健康、手势结果、
   照片记录、打印任务等值对象的权威定义在 ``app/auto_flow/models.py``，这里只 import，不重复定义。

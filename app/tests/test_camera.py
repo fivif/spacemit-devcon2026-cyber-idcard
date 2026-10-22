@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """T-2 UVC 抓帧测试：by-id 解析 / 双分辨率 / 明确报错 / mock 降级。
 
-对应 docs/spec/系统规格-v2.md 里 T-2 的四条 acceptance：
+对应 系统规格 v2（内部文档） 里 T-2 的四条 acceptance：
   a) 不硬编码设备号，按 by-id 找到采集节点（camera.resolve_device）；
   b) 预览与拍照两种分辨率（PREVIEW_SIZE / PHOTO_SIZE）都能抓到非空 JPEG；
   c) 设备不存在时 open() 不崩溃、返回明确错误（BOOTH_CAMERA_DEVICE=/dev/video99）；

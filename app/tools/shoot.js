@@ -3,7 +3,7 @@
  * shoot.js —— 用 CDP 给现场界面逐页截图（零依赖，Node 22+ 自带 WebSocket）
  *
  * 为什么不用 `chrome --screenshot`：那个没法点、没法等、`--window-size=390`
- * 还会被 chromium 的 518px 最小窗宽夹住（见 knowledge/04 坑 30），窄屏页会
+ * 还会被 chromium 的 518px 最小窗宽夹住（见 踩坑记录 坑 30），窄屏页会
  * 拿到「按 518 排版只截 390」的假图。走 CDP 才能用
  * Emulation.setDeviceMetricsOverride 真按手机视口渲染。
  *

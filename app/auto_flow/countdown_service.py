@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """T-15 服务端倒计时：安全门之后的 8 秒倒计时、取消判定与“应拍摄”决定。
 
-规格依据：`docs/spec/自动流程规格-v1.md`（「Components / CaptureCoordinator」、
+规格依据：`自动流程规格 v1（内部文档）`（「Components / CaptureCoordinator」、
 `GET /api/state` 的 capture 小节）与任务 T-15。当前产品默认已调整为 8 秒。
 
 职责边界（逐条）：

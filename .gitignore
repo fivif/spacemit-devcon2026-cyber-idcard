@@ -22,6 +22,10 @@ __pycache__/
 venv/
 *.egg-info/
 
+# 内部开发记录（物料 / SOP / 合规 / 规格 / 知识库），只留本地
+/docs/
+/knowledge/
+
 # 日志与临时文件
 *.log
 *.tmp

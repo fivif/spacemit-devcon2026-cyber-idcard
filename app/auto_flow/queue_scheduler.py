@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """QueueScheduler：队列自动调度（T-13）。
 
-规格依据：`docs/spec/自动流程规格-v1.md` T-13 与 `docs/spec/自动流程规格-v1.md`
+规格依据：`自动流程规格 v1（内部文档）` T-13 与 `自动流程规格 v1（内部文档）`
 （组件职责 / Policy / Restart and recovery）。本模块只做“何时叫号、何时弃号、何时释放
 拍摄位”的调度决策，不重复实现队列状态机、也不接触硬件：
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """T-15 授权拍摄桥：触发 -> 抓帧 -> PhotoStore 提交 -> T-1 状态机推进。
 
-规格依据：`docs/spec/自动流程规格-v1.md`（「Components / CaptureCoordinator」
+规格依据：`自动流程规格 v1（内部文档）`（「Components / CaptureCoordinator」
 「Data models / CaptureJob」「Error handling」）与任务 T-15。
 
 职责边界：

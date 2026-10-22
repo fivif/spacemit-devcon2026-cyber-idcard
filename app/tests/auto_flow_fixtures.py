@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """T-14 测试依赖容器：假相机、假时钟与可脚本化假适配器（全部只写临时目录）。
 
-规格依据：`docs/spec/自动流程规格-v1.md`「Testing strategy · Fixtures / Repository-verified
+规格依据：`自动流程规格 v1（内部文档）`「Testing strategy · Fixtures / Repository-verified
 entry points and injection」「Security」「Error handling」。
 
 边界（重要）：

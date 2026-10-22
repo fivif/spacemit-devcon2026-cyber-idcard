@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """取图令牌：签发与校验（T-7）。
 
-规格依据：`docs/spec/自动流程规格-v1.md`「Components · TokenService」「Data models ·
-PhotoRecord」「Security」；任务合同 `docs/spec/自动流程规格-v1.md` T-7。
+规格依据：`自动流程规格 v1（内部文档）`「Components · TokenService」「Data models ·
+PhotoRecord」「Security」；任务合同 `自动流程规格 v1（内部文档）` T-7。
 
 约束（逐字对齐规格）：
 - 令牌恰好 22 个 URL-safe 字符（字母 / 数字 / ``-`` / ``_``），由安全随机源产生。

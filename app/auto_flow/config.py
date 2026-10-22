@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """auto_flow 集中配置：类型化解析、范围校验与安全默认值（T-11）。
 
-规格依据：`docs/spec/自动流程规格-v1.md`「Configuration」「Security」「Testing strategy」。
+规格依据：`自动流程规格 v1（内部文档）`「Configuration」「Security」「Testing strategy」。
 本模块只做一件事：把环境变量（或注入的环境字典）解析成不可变的类型化配置，并在启动期
 把非法值、生产禁用项和缺失的合规策略全部拦下。失败方向一律是「启动报错」，不静默回退。
 

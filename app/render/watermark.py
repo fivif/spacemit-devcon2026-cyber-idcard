@@ -10,10 +10,10 @@
    这个 logo 只用到这些）。素材缺失时退化成自绘几何芯片，绝不抛异常。
 3. **水印带**：竖版 1000x1250 是整宽三行带；横版 1600x1000 沿用 cards3 版面，
    信息带只能放在**照片区右侧**（左下角是照片，底边左侧没有可用空间 ——
-   knowledge/03 §3 记录过这个越界）。
+   视觉规格 §3 记录过这个越界）。
 
 诚实优先：``badge_text(False)`` 必须返回 ``"CPU"``。拿不到 AI 核就如实标 CPU，
-不得冒充（docs/spec/系统规格-v2.md §8 / §11.4）。
+不得冒充（系统规格 v2（内部文档） §8 / §11.4）。
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 # --------------------------------------------------------------------------
-# 冻结常量（docs/spec/系统规格-v2.md §11.4）
+# 冻结常量（系统规格 v2（内部文档） §11.4）
 # --------------------------------------------------------------------------
 
 HASHTAG = "#SpacemiTDevCon"
@@ -644,7 +644,7 @@ def apply_watermark(image: Image.Image, record_id, *, name: str = "", handle: st
                     infer_ms=None, person_count: int = 0) -> Image.Image:
     """在成片上加水印信息带，返回新图。
 
-    三行版式（knowledge/03 §8）::
+    三行版式（视觉规格 §8）::
 
         #SpacemiTDevCon                     [EP SpaceMIT]  0471
         张伟 ZHANG WEI                                @zhangwei

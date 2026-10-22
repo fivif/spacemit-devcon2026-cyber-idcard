@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """T-6 触发资格判定：会话开始登记 + 服务端连续稳定帧累计 + 单次触发锁。
 
-规格依据：`docs/spec/自动流程规格-v1.md`「Components / CaptureCoordinator」
+规格依据：`自动流程规格 v1（内部文档）`「Components / CaptureCoordinator」
 「FR-5、FR-6」「Testing strategy」（禁用/多人/画面外/不稳定/低置信度负例序列）。
 
 本任务边界（逐条，超出即越界）：

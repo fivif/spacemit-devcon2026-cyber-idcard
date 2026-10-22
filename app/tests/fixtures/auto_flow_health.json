@@ -1,0 +1,30 @@
+{
+  "camera": {
+    "status": "unavailable",
+    "checked_at": "2026-09-30T09:00:00Z",
+    "reason": "相机无帧（硬件链路待现场复测，见知识底座）"
+  },
+  "gesture": {
+    "status": "disabled",
+    "checked_at": "2026-09-30T09:00:00Z",
+    "reason": "手势模型与误触率未验收，保持关闭"
+  },
+  "queue": {
+    "status": "ok",
+    "checked_at": "2026-09-30T09:00:00Z"
+  },
+  "storage": {
+    "status": "ok",
+    "checked_at": "2026-09-30T09:00:00Z"
+  },
+  "aigc": {
+    "status": "disabled",
+    "checked_at": "2026-09-30T09:00:00Z",
+    "reason": "外置处理条款未批准，保持关闭"
+  },
+  "printer": {
+    "status": "disabled",
+    "checked_at": "2026-09-30T09:00:00Z",
+    "reason": "打印设备与协议未验收，保持关闭"
+  }
+}

@@ -1,0 +1,76 @@
+/* pick.css —— 取图页（手机优先） */
+
+body { background: #f1f0ea; color: #1c2a31; }
+body::before { opacity: .58; background: radial-gradient(620px 420px at 92% -8%, #d7e9e1b8, transparent 72%), radial-gradient(500px 360px at 0% 100%, #f3d9c2a0, transparent 74%); }
+.pick {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 680px; margin: 0 auto; padding: max(20px, env(safe-area-inset-top)) 18px calc(56px + env(safe-area-inset-bottom));
+  min-width: 0;
+  display: flex; flex-direction: column; gap: 18px;
+}
+.pick .head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0; }
+.pick .head .spacer { flex: 1; }
+.pick-title { display: grid; gap: 7px; padding: 7px 0 1px; }
+.pick-title .tag { color: #72933b; font: var(--sm-typo-label-medium); letter-spacing: .08em; }
+.pick-title h1 { color: #1b2832; font-size: clamp(25px, 7vw, 38px); line-height: 1.08; text-wrap: balance; }
+.pick-title p { color: #78827f; line-height: 1.5; }
+
+.pick .photo {
+  border-radius: var(--sm-radius-xl); overflow: hidden;
+  box-shadow: 0 22px 52px #30434d1f, 0 0 0 1px #26323b18;
+  background: #fffdf9;
+  animation: reveal 620ms var(--sm-spring) both;
+}
+@keyframes reveal { from { opacity: 0; transform: translateY(14px) scale(0.98); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+.pick .photo img { width: 100%; display: block; }
+
+.pick .ident { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.pick .serial { font-family: var(--sm-font-mono); font-size: 26px; letter-spacing: 0.02em; }
+.pick .actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.pick .actions .full { grid-column: span 2; }
+.pick .actions .btn { min-width: 0; }
+/* 没有无标识版时按钮是单数，「复制文案」占满一行，别留半格空洞 */
+.pick .actions:has(#save-clean[hidden]) #share { grid-column: span 2; }
+.pick .print-note:empty { display: none; }
+.pick .save-hint { margin-top: -8px; color: #4d711e; }
+.save-preview {
+  scroll-margin-top: 16px; min-width: 0; padding: 16px;
+  display: grid; gap: 12px; border-radius: var(--sm-radius-lg);
+  background: #fffdf9; box-shadow: inset 0 0 0 1px #26323b20;
+}
+.pick [hidden] { display: none !important; }
+.save-preview-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.save-preview-head h2 { font-size: 19px; line-height: 1.4; }
+.save-preview-head .btn { flex: none; width: auto; }
+.save-versions { display: flex; flex-wrap: wrap; gap: 8px; }
+.save-versions .btn { width: auto; }
+.save-versions .btn[aria-pressed="true"] { background: #e4f0cf; box-shadow: inset 0 0 0 1px #72933b; }
+.save-preview img, .pick .photo img {
+  max-width: 100%; height: auto; -webkit-touch-callout: default; -webkit-user-select: auto; user-select: auto;
+}
+.save-preview img { display: block; width: 100%; }
+.save-preview .btn:active { transform: scale(.98); }
+.save-link { width: 100%; min-width: 0; padding: 12px; border: 1px solid #26323b30; border-radius: 10px; font-size: 16px; }
+.pick .note { display: grid; gap: 7px; font: var(--sm-typo-body-small); color: #78858a; line-height: 1.7; }
+.pick .danger-zone { margin-top: 8px; padding-top: 18px; border-top: 1px solid #26323b1a; }
+.pick .caption {
+  padding: 16px 18px; overflow-wrap: anywhere; border-radius: var(--sm-radius-lg);
+  background: #fffdf9d9; box-shadow: inset 0 0 0 1px #26323b12;
+  font: var(--sm-typo-body-medium); color: #617078; line-height: 1.7;
+}
+.pick .caption b { color: #26323b; }
+.pick.is-gone .photo, .pick.is-gone .actions, .pick.is-gone .caption, .pick.is-gone .danger-zone { display: none; }
+.pick.is-gone .save-preview, .pick.is-gone .save-hint { display: none; }
+/* 存好图之后：唤起 App（跳不到发布页，只能到 App 主页，别写成"一键发布"） */
+.pick .btn { background: #fffdf9; color: #26323b; box-shadow: inset 0 0 0 1px #26323b20; }
+.pick .btn-primary { background: #9fc858; color: #26323b; box-shadow: 0 8px 18px #789a3d2e; }
+.pick .btn-danger { background: #f4d4d1; color: #9b322c; box-shadow: inset 0 0 0 1px #d78a84; }
+.pick .badge { background: #ffffffc4; color: #667473; box-shadow: inset 0 0 0 1px #26323b16; }
+.pick .badge-ep { background: #e4f0cf; color: #4d711e; }
+.pick .badge-degraded { background: #f4d4d1; color: #9b322c; }
+@media (max-width: 460px) {
+  .pick { padding-left: 14px; padding-right: 14px; gap: 15px; }
+  .pick .actions { gap: 8px; }
+  .pick .actions .btn { padding-left: 10px; padding-right: 10px; }
+  .pick #badge-ep, .pick .share-qr { display: none; }
+}

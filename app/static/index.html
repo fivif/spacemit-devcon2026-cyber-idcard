@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F3F2EC">
+<!-- __BUILD__ 由服务端替换成「页面版本」；页面每 20 秒对一次 /api/build，
+     对不上就自己刷新。现场的屏幕一开一整天，没人会去点刷新（见 net.js 坑 38）。 -->
+<meta name="build" content="__BUILD__">
+<meta name="build-guard" content="auto">
+<title>开发者证件照 · SpacemiT DevCon 2026</title>
+<link rel="icon" href="/static/assets/brand/spacemit-logo.svg?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/tokens.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/base.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/booth.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/ui-polish.css?v=__BUILD__">
+<!-- T-4：自动流程（轮播 / 手机报名二维码 / 代为报名）独立样式，不改既有选择器 -->
+<link rel="stylesheet" href="/static/auto-flow.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/portrait-mode.css?v=__BUILD__">
+</head>
+<body data-af-page="entry">
+<a class="skip-link" href="#main-content">跳到拍摄设置</a>
+<main class="shell" id="main-content">
+
+  <header class="topbar">
+    <span class="lockup">
+      <img class="mark" src="/static/assets/brand/spacemit-logo.svg?v=__BUILD__" alt="SpacemiT" width="28" height="35">
+      <span class="word"><b>SpacemiT</b><span>DevCon 2026</span></span>
+    </span>
+    <span class="spacer"></span>
+    <span class="badge" id="badge-ep">算力预热中</span>
+    <span class="badge hide" id="badge-cam">相机</span>
+    <span class="badge badge-degraded hide" id="badge-mock">MOCK 模式</span>
+  </header>
+
+  <section class="stagebox" id="stagebox">
+    <video class="preview preview-video mirror-x" id="preview-stream" autoplay muted playsinline disablepictureinpicture aria-label="实时取景"></video>
+    <img class="preview preview-static mirror-x" id="preview" alt="取景画面">
+    <canvas class="boxes" id="boxes-stage"></canvas>
+    <div class="framing">
+      <div class="thirds"></div>
+      <span class="corner tl"></span><span class="corner tr"></span>
+      <span class="corner bl"></span><span class="corner br"></span>
+      <div class="caption">站到镜头前 · 看这里</div>
+    </div>
+    <div class="camstate" id="camstate" aria-live="polite"></div>
+    <div class="statusline">
+      <span class="badge" id="badge-cam-detail">—</span>
+    </div>
+    <div class="countdown" id="countdown" aria-hidden="true"></div>
+    <div class="flash" id="flash" aria-hidden="true"></div>
+    <div class="aigc-visual" id="aigc-visual" aria-live="polite" aria-hidden="true">
+      <div class="aigc-art" aria-hidden="true">
+        <span class="aigc-orbit orbit-a"></span>
+        <span class="aigc-orbit orbit-b"></span>
+        <span class="aigc-face"></span>
+        <span class="aigc-scan"></span>
+        <i class="spark s1"></i><i class="spark s2"></i><i class="spark s3"></i>
+        <i class="spark s4"></i><i class="spark s5"></i><i class="spark s6"></i>
+      </div>
+      <div class="aigc-copy">
+        <span>PORTRAIT LAB · SPACEMIT DEVCON</span>
+        <strong>正在把你画成另一种风格</strong>
+        <p id="aigc-visual-text">正在保留五官与姿势</p>
+      </div>
+    </div>
+  </section>
+
+  <aside class="panel" id="panel" data-mode="idle">
+    <div class="head">
+      <span class="tag">#SpacemiTDevCon</span>
+      <h1 class="h1">拍一张你的开发者证件照</h1>
+      <p class="muted intro">选一张喜欢的风格样张，站到镜头前。现场生成一张只属于你的大会纪念照。</p>
+    </div>
+
+    <section class="af-entry" id="af-entry" aria-labelledby="af-entry-heading">
+      <div class="af-entry-head">
+        <span class="label" id="af-entry-heading">扫码排队</span>
+        <span class="af-note">手机选风格、同意拍摄，到号再来</span>
+      </div>
+      <div class="af-unavailable hide" id="af-entry-unavailable" role="status" aria-live="polite"></div>
+      <div class="af-carousel" id="af-carousel" aria-label="风格示意自动轮播" data-af-index="0">
+        <div class="af-carousel-viewport">
+          <img class="af-carousel-img" id="af-carousel-img" alt="风格示意" decoding="async">
+          <div class="af-carousel-empty" id="af-carousel-empty">风格示意加载中…</div>
+        </div>
+        <div class="af-carousel-caption">
+          <strong id="af-carousel-title">—</strong>
+          <small id="af-carousel-desc"></small>
+          <small>图片仅示意画风，人像模式另选。</small>
+        </div>
+        <div class="af-carousel-dots" id="af-carousel-dots" aria-label="切换风格示意"></div>
+      </div>
+      <div class="af-join">
+        <div class="af-join-qr">
+          <img id="af-join-qr" alt="扫码打开手机排队页" width="132" height="132">
+          <div class="af-join-fallback hide" id="af-join-fallback">
+            <p class="af-note">二维码暂不可用，请确认手机与现场设备在同一网络，再手动打开：</p>
+            <p class="af-join-url af-mono" id="af-join-url">—</p>
+          </div>
+        </div>
+        <div class="af-join-copy">
+          <strong>扫码报名 · 手机排队</strong>
+          <p class="af-note">手机上选风格、阅读告知并提交；到号后回到拍摄位。</p>
+          <p class="af-note af-join-link-note">手机入口：<a class="af-join-url" id="af-join-link" href="/join">打开排队页</a></p>
+        </div>
+      </div>
+
+      <details class="af-inline" id="af-inline">
+        <summary><span>在这台屏幕报名排队</span><small>扫码不方便时使用</small></summary>
+        <div class="af-form">
+          <label class="af-field"><span>拍摄风格</span>
+            <select class="af-select" id="af-style" aria-label="排队时想拍的风格"></select>
+          </label>
+          <fieldset class="portrait-mode" id="af-portrait-mode">
+            <legend>人像模式</legend>
+            <div class="portrait-mode-options">
+              <label><input type="radio" name="queue_portrait_mode" value="standard" checked>写实版</label>
+              <label><input type="radio" name="queue_portrait_mode" value="chibi">Q版大头像</label>
+            </div>
+          </fieldset>
+          <label class="af-field"><span>姓名或昵称（选填）</span>
+            <input class="af-input" id="af-name" name="queue_display_name" maxlength="24" placeholder="可留空，留空也能提交">
+          </label>
+          <label class="af-field"><span>开发者 ID 或社交账号（选填）</span>
+            <input class="af-input" id="af-handle" name="queue_developer_id" maxlength="32" placeholder="可留空，留空也能提交">
+          </label>
+          <div class="af-consent" id="af-consent" aria-label="拍摄告知与同意"></div>
+          <div class="af-form-row"><button class="btn btn-primary" id="af-submit" type="button" disabled>加入排队</button></div>
+          <p class="af-status" id="af-status" role="status" aria-live="polite"></p>
+        </div>
+      </details>
+
+      <div class="af-queue hide" id="af-queue" aria-live="polite">
+        <span class="label">我的排队</span>
+        <div class="af-queue-number af-mono" id="af-queue-number">—</div>
+        <p class="af-queue-status" id="af-queue-status" data-af-tone="waiting">—</p>
+        <p class="af-note" id="af-queue-hint"></p>
+        <div class="af-form-row">
+          <button class="btn btn-primary hide" id="af-start" type="button">开始拍摄</button>
+          <button class="btn btn-ghost hide" id="af-reset" type="button">重新报名</button>
+          <button class="btn btn-ghost" id="af-abandon" type="button">放弃排队</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="direct-capture" aria-labelledby="direct-capture-heading">
+      <div class="block-heading"><span class="label" id="direct-capture-heading">现场直接拍摄</span><span class="block-note">不排队，现场操作</span></div>
+    <div class="block">
+      <div class="block-heading">
+        <span class="label">成片方向</span>
+        <span class="block-note">横版适合分享，竖版适合头像</span>
+      </div>
+      <div class="segmented" id="orientations" role="group" aria-label="成片方向">
+        <button class="segment is-active" type="button" data-orientation="vertical" aria-pressed="true">竖版头像</button>
+        <button class="segment" type="button" data-orientation="wide" aria-pressed="false">横版留念</button>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-heading">
+        <span class="label">选择一种画风</span>
+        <span class="block-note" id="style-note">先选一张，现场生成</span>
+      </div>
+      <div class="style-gallery" id="styles" aria-label="画风选择"></div>
+      <p class="portrait-mode-note">图片仅示意画风，人像模式另选。</p>
+    </div>
+
+    <fieldset class="portrait-mode" id="capture-portrait-mode">
+      <legend>人像模式</legend>
+      <div class="portrait-mode-options">
+        <label><input type="radio" name="capture_portrait_mode" value="standard" checked>写实版</label>
+        <label><input type="radio" name="capture_portrait_mode" value="chibi">Q版大头像</label>
+      </div>
+      <p class="portrait-mode-note">画风与人像模式可分别选择。</p>
+    </fieldset>
+    <details class="optional-info">
+      <summary><span>填写个人信息</span><small>选填，仅写入成片</small></summary>
+      <div class="optional-fields">
+        <label class="field-wrap"><span>姓名或昵称</span><input class="field" id="name" name="display_name" maxlength="24" placeholder="例如：小明…" autocomplete="name"></label>
+        <label class="field-wrap"><span>开发者 ID 或社交账号</span><input class="field" id="handle" name="developer_id" maxlength="32" placeholder="例如：@spacemit…" autocomplete="off" spellcheck="false"></label>
+        <p class="field-note">个人信息不会发送给风格生成服务。</p>
+      </div>
+    </details>
+
+    <label class="switchline">
+      <span class="switch"><input type="checkbox" id="agree"><span class="track"></span></span>
+      <span class="txt">我已阅读并同意 <a href="#" id="open-legal">《拍摄告知》</a>，同意拍摄并生成证件照。</span>
+    </label>
+
+    <div class="flow" id="flow">
+      <div class="steps" id="steps"></div>
+      <p class="hint" id="flow-hint">正在处理…</p>
+    </div>
+
+    <div class="fire-row">
+      <button class="fire" id="fire" disabled aria-label="开始拍摄">
+        <span class="ring" aria-hidden="true"></span>
+        <span class="glyph" aria-hidden="true">◉</span>
+        <span class="sr">开始拍摄</span>
+      </button>
+      <p class="hint" id="hint">先同意《拍摄告知》，按钮才会亮</p>
+    </div>
+    </section>
+  </aside>
+</main>
+
+<div class="result" id="result" role="dialog" aria-modal="true" aria-labelledby="result-title" aria-hidden="true">
+  <div class="inner">
+    <h2 class="sr" id="result-title">你的开发者证件照已生成</h2>
+    <img class="shot" id="shot" alt="生成的开发者证件照">
+    <div class="meta">
+      <div>
+        <span class="label">编号</span>
+        <div class="serial mono" id="serial">0000</div>
+        <p id="result-portrait-mode">写实版</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="label">推理耗时</span><b id="stat-infer">—</b></div>
+        <div class="stat"><span class="label">算力来源</span><b id="stat-ep">—</b></div>
+        <div class="stat"><span class="label">端到端</span><b id="stat-total">—</b></div>
+        <div class="stat"><span class="label">检出人像</span><b id="stat-persons">—</b></div>
+      </div>
+      <div class="row">
+        <div class="qr"><img id="qr" alt="取图二维码"></div>
+        <div class="col">
+          <span class="label">扫码取图</span>
+          <p class="muted">手机扫码打开取图页，可保存原图、复制文案，也可以删除自己的照片。</p>
+        </div>
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary" id="download">保存图片</a>
+        <button class="btn" id="copy" type="button">复制分享文案</button>
+        <button class="btn btn-ghost" id="again" type="button">再拍一张</button>
+      </div>
+      <p class="hint">小红书 / 微信没有开放第三方一键发布接口，因此这里给的是「保存原图 + 现成文案」，粘贴即可发布。</p>
+    </div>
+  </div>
+</div>
+
+<div class="sheet-scrim" id="scrim" aria-hidden="true"></div>
+<section class="sheet" id="legal" role="dialog" aria-modal="true" aria-labelledby="legal-title" aria-hidden="true" tabindex="-1">
+  <div class="grabber"></div>
+  <div class="legal">
+    <h2 id="legal-title">拍摄告知（请阅读后点击“同意”）</h2>
+    <p>本活动由SpacemiT（以下简称“我们”）在 SpacemiT DevCon 2026 开发者大会现场运营。请在拍摄前仔细阅读：</p>
+    <ol>
+      <li>活动将通过大会现场拍摄生成 SpacemiT DevCon 2026 开发者电子证件照，仅本人可领取。</li>
+      <li>本次拍摄图像处理仅限于人像抠图（将人物从背景中分离）与基础证件照排版；我们不会进行人脸识别、身份比对或用于建任何人脸库或特征库。如您主动选择“AI 风格化”等增强效果，该步骤可能由第三方模型完成，我们会在您触发时单独弹出一次同意提示，并告知您第三方的名称及处理方式；不同意不影响基础拍摄与取图。</li>
+      <li>活动对您的个人信息不作强制搜集，姓名、昵称等字段均可留空，仅作为排队标识，我们不会因您留空而拒绝服务。您填写的信息及拍摄照片均仅临时留存，链接自生成之日起【1】日内有效，链接失效后，相应数据将无法继续查看，活动不会留存任何副本。</li>
+      <li>请在链接有效期内保存照片，您也可以随时对照片采取删除操作或请现场工作人员协助删除。</li>
+    </ol>
+    <p>如有任何疑问或投诉，请联系现场工作人员。</p>
+    <p>点击“同意”即表示您已阅读并理解上述规则，同意后您将获取专属排队号码并加入排队。</p>
+    <div class="row">
+      <button class="btn btn-primary grow" data-legal-action="agree" type="button">同意</button>
+      <button class="btn btn-ghost grow" data-legal-action="decline" type="button">暂不同意</button>
+    </div>
+  </div>
+</section>
+
+<script src="/static/js/net.js?v=__BUILD__"></script>
+<script src="/static/js/booth.js?v=__BUILD__"></script>
+<!-- T-4：自动流程（先文案层与同意组件，再交互层） -->
+<script src="/static/auto-flow-messages.js?v=__BUILD__"></script>
+<script src="/static/auto-flow-consent.js?v=__BUILD__"></script>
+<script src="/static/auto-flow.js?v=__BUILD__"></script>
+</body>
+</html>

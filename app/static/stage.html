@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F1F0EA">
+<title>算力视图 · SpacemiT DevCon 2026</title>
+<!-- 大屏是无人值守的：__BUILD__ 换成页面版本，页面自己对 /api/build，
+     过期就自己刷新（见 net.js 坑 38）。 -->
+<meta name="build" content="__BUILD__">
+<meta name="build-guard" content="auto">
+<link rel="icon" href="/static/assets/brand/spacemit-logo.svg?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/tokens.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/base.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/stage.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/ui-polish.css?v=__BUILD__">
+</head>
+<body>
+<div class="stage">
+
+  <header class="stagebar">
+    <span class="lockup">
+      <img class="mark" src="/static/assets/brand/spacemit-logo.svg?v=__BUILD__" alt="SpacemiT" width="26" height="33">
+      <span class="word"><b>SpacemiT</b><span>DevCon 2026</span></span>
+    </span>
+    <span class="badge" id="badge-ep">算力预热中</span>
+    <span class="badge" id="badge-cam">相机检测中</span>
+    <span class="badge badge-mock hide" id="badge-mock">MOCK 合成源</span>
+    <span class="spacer"></span>
+    <span class="clock" id="clock">--:--:--</span>
+  </header>
+
+  <main class="stagegrid">
+    <section class="view is-idle" id="view">
+      <video class="preview preview-video mirror-x" id="preview-stream" autoplay muted playsinline disablepictureinpicture aria-label="实时取景"></video>
+      <img class="preview preview-static mirror-x" id="preview" alt="取景画面">
+      <img class="mask mirror-x" id="mask" alt="">
+      <canvas class="boxes" id="boxes"></canvas>
+      <div class="scan"></div>
+      <div class="camstate" id="camstate" aria-live="polite"></div>
+      <div class="statusline">
+        <span class="badge" id="badge-now">待机</span>
+      </div>
+
+      <!-- 待机层：无人时的默认画面（风格轮播 + 欢迎语）。有人走近自动退场。 -->
+      <div class="idle-show" id="idle-show">
+        <div class="hero">
+          <div class="big">拍一张属于你的<br>开发者证件照</div>
+          <div class="sub" id="wake-hint">站到镜头前 · K3 当场用 RISC-V AI 核分离人像 · 扫码取走成片</div>
+        </div>
+        <div class="idle-slides">
+          <img class="idle-slide" id="idle-slide" alt="风格示意" decoding="async">
+          <div class="idle-slide-meta">
+            <span class="idle-slide-label" id="idle-slide-label">风格示意</span>
+            <span class="idle-slide-dots" id="idle-slide-dots" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 抠像阶段：把「人像分割」从扫描线里单独拎出来给一个专属画面 -->
+      <div class="matting" id="matting" aria-hidden="true">
+        <div class="matting-badge">
+          <span class="matting-chip">人像分割</span>
+          <span class="matting-caption" id="matte-caption">逐像素分离人像</span>
+        </div>
+      </div>
+    </section>
+
+    <aside class="readout">
+      <div class="heroline">
+        <span class="tag">#SpacemiTDevCon</span>
+        <h1 class="h2">算力视图</h1>
+      </div>
+
+      <div class="metrics">
+        <div class="metric hot" id="metric-infer">
+          <span class="k">本次推理</span>
+          <span class="v" id="m-infer">—</span>
+        </div>
+        <div class="metric" id="metric-ep">
+          <span class="k">算力来源</span>
+          <span class="v metric-source" id="m-ep">—</span>
+        </div>
+        <div class="metric">
+          <span class="k">端到端</span>
+          <span class="v" id="m-total">—</span>
+        </div>
+        <div class="metric">
+          <span class="k">检出人像</span>
+          <span class="v" id="m-persons">—</span>
+        </div>
+        <div class="metric">
+          <span class="k">近 20 次中位均值</span>
+          <span class="v" id="m-avg">—</span>
+        </div>
+        <div class="metric">
+          <span class="k">已出图</span>
+          <span class="v" id="m-count">0<small>张</small></span>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="label">处理流水</span>
+        <div class="steps steps-mini" id="steps"></div>
+      </div>
+
+      <div class="block">
+        <span class="label">最近成片</span>
+        <div class="recent" id="recent"><span class="empty">还没有成片</span></div>
+      </div>
+
+      <div class="block degraded-note" id="degraded-note" hidden>
+        <span class="badge badge-degraded" id="degraded-text">降级</span>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="stagefoot">
+    <span class="lockup foot-lockup">
+      <img class="mark" src="/static/assets/brand/spacemit-logo.svg?v=__BUILD__" alt="" width="26" height="33">
+      <span class="word"><b>RISC-V AI CPU</b><span>spacemit.com</span></span>
+    </span>
+    <div class="marquee"><span id="isa">rv64imafdcvh_zba_zbb_zbc_zbs_zve64d_zvfh</span></div>
+    <span class="spacer"></span>
+    <span id="foot-note">成片保存 1 天 · 取图页可随时删除</span>
+  </footer>
+</div>
+
+<script src="/static/js/net.js?v=__BUILD__"></script>
+<script src="/static/js/stage.js?v=__BUILD__"></script>
+</body>
+</html>

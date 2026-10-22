@@ -1,0 +1,33 @@
+# 运行时数据（照片、掩码、二维码、记录）
+app/data/*
+!app/data/.gitkeep
+!app/data/*/.gitkeep
+# 出厂默认数据（风格目录 / 底板目录 / 发号器初值）随仓库发布，其余运行时数据不入库
+!app/data/style-catalog.json
+!app/data/background-catalog.json
+!app/data/counter.json
+
+# 模型与大体积视频素材不随仓库分发
+app/assets/models/*
+!app/assets/models/.gitkeep
+app/assets/video/*
+!app/assets/video/.gitkeep
+*.onnx
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv*/
+venv/
+*.egg-info/
+
+# 日志与临时文件
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# 本地截图与设计草稿
+shots/
+.plan/raw/

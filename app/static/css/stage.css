@@ -1,0 +1,211 @@
+/* stage.css —— 大屏算力视图（1920×1080 满屏，无滚动条） */
+
+html, body { height: 100%; overflow: hidden; }
+.stage {
+  position: relative; z-index: 1;
+  height: 100vh; padding: 28px 34px 22px;
+  display: grid; grid-template-rows: auto 1fr auto; gap: 20px;
+}
+
+.stagebar { display: flex; align-items: center; gap: 16px; }
+.stagebar .spacer { flex: 1; }
+.stagebar .clock { font-family: var(--sm-font-mono); color: var(--sm-on-2); font-size: 15px; }
+
+.stagegrid {
+  display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(430px, 0.75fr);
+  gap: 22px; min-height: 0;
+}
+
+/* ---- 取景 + 掩码成形 ---- */
+.view {
+  position: relative; border-radius: var(--sm-radius-2xl); overflow: hidden;
+  background: #08080A; box-shadow: var(--sm-shadow-2), var(--sm-inset-hair);
+  min-height: 0;
+}
+.view .preview { width: 100%; height: 100%; object-fit: cover; }
+.view .preview-static { display: none; }
+.view .preview-static.is-visible, .view .preview-video.is-visible { display: block; }
+.view.is-idle .preview { opacity: 0.42; filter: saturate(0.7); }
+/* is-mock 现在只表示「空灰合成源」：没内容可看才藏画面。
+   静态照片联调源（camera_static_photo=true）不会带 is-mock，画面照常显示。 */
+.view.is-mock .preview { opacity: 0; }
+.view .camstate {
+  display: none;
+  position: absolute; left: 50%; top: calc(50% + 110px); transform: translateX(-50%);
+  padding: 10px 20px; border-radius: var(--sm-radius-pill);
+  background: #0A0A0BCC; border: 1px solid var(--sm-outline);
+  color: var(--sm-on); font: var(--sm-typo-label-large); letter-spacing: 0.02em;
+  backdrop-filter: blur(8px); pointer-events: none; white-space: nowrap;
+}
+.view.is-offline .camstate { display: block; }
+.view.is-mock .camstate {
+  display: block; top: 50%; background: transparent; border: 0;
+  padding: 0; color: #c9d8c4; white-space: normal; text-align: center;
+}
+.view.is-offline .hero { opacity: 0; }
+.view .mask {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; mix-blend-mode: screen; pointer-events: none;
+  filter: sepia(1) saturate(6) hue-rotate(35deg) brightness(1.35) blur(0.4px);
+  opacity: 0;
+}
+.view .mask.is-reveal { animation: maskReveal 1250ms var(--sm-spring) both; }
+@keyframes maskReveal {
+  0% { opacity: 0; clip-path: inset(0 0 0 100%); filter: sepia(1) saturate(6) hue-rotate(35deg) brightness(2.2) blur(14px); }
+  45% { opacity: 0.95; }
+  100% { opacity: 0.14; clip-path: inset(0 0 0 0); filter: sepia(1) saturate(5) hue-rotate(35deg) brightness(1.25) blur(0.8px); }
+}
+.view.is-offline .mask, .view.is-offline .boxes { opacity: 0 !important; }
+.view .boxes { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.view .hero {
+  position: absolute; inset: 0; display: grid; place-content: center; gap: 12px; text-align: center;
+  padding: 40px; transition: opacity var(--sm-dur-slow) var(--sm-ease);
+}
+.view .hero .big { font: var(--sm-typo-display-medium-emphasized); letter-spacing: -0.02em; }
+.view .hero .sub { color: var(--sm-on-2); font: var(--sm-typo-title-medium); }
+
+/* ---- 待机层（idle-show）：轮播 + 欢迎语，有人走近整体退场 ----
+   它虽然 position:absolute; inset:0，但**完全不透明地盖住取景框**，
+   属「页面背景层」而非浮层 —— 所以随主题翻浅。
+   （对比 .matting/.camstate 那些真正压在画面上的浮层，它们保持深色。） */
+.idle-show {
+  position: absolute; inset: 0; z-index: 2;
+  display: grid; grid-template-rows: 1fr auto; gap: 18px;
+  padding: clamp(24px, 3vw, 56px);
+  background: linear-gradient(180deg, #F1F0EAE8 0%, #F1F0EAC9 42%, #F1F0EAF2 100%);
+  transition: opacity var(--sm-dur-slow) var(--sm-ease), visibility var(--sm-dur-slow);
+}
+.idle-show.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+.idle-show .hero { position: static; display: grid; place-content: center; gap: 12px; text-align: center; padding: 0; }
+.idle-slides { display: grid; gap: 10px; justify-items: center; }
+.idle-slide {
+  width: min(46%, 430px); aspect-ratio: 16 / 10; object-fit: cover;
+  border-radius: 18px; box-shadow: 0 18px 44px #26323b26, inset 0 0 0 1px #26323b1f;
+  animation: idleIn 520ms var(--sm-spring) both;
+}
+@keyframes idleIn { from { opacity: 0.3; transform: translateY(8px) scale(0.985); } to { opacity: 1; transform: none; } }
+.idle-slide-meta { display: flex; align-items: center; gap: 10px; color: var(--sm-on-2); font: var(--sm-typo-label-large); }
+.idle-slide-dots { display: inline-flex; gap: 6px; }
+.idle-dot { width: 7px; height: 7px; border-radius: 999px; background: #26323b26; transition: background var(--sm-dur) var(--sm-ease), width var(--sm-dur) var(--sm-ease); }
+.idle-dot.is-active { width: 20px; background: var(--sm-brand-ink); }
+
+/* ---- 抠像阶段隔离层：inferring 时亮起，把「正在把你从背景里剥出来」可视化 ---- */
+.matting {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  display: grid; align-content: end; justify-items: center;
+  padding: clamp(18px, 2.4vw, 40px);
+  opacity: 0; visibility: hidden;
+  background: linear-gradient(180deg, transparent 46%, #0A1408D9 100%);
+  transition: opacity var(--sm-dur) var(--sm-ease), visibility var(--sm-dur);
+}
+.matting.is-on { opacity: 1; visibility: visible; }
+.matting-badge {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 12px 18px; border-radius: 999px;
+  background: #0A0A0BD9; backdrop-filter: blur(8px);
+  box-shadow: inset 0 0 0 1px #9FEF0040, 0 8px 26px #00000059;
+}
+.matting-chip {
+  padding: 3px 10px; border-radius: 999px;
+  background: #9FEF001F; color: var(--sm-brand);
+  font: var(--sm-typo-label-medium); letter-spacing: 0.08em;
+  animation: mattingPulse 1.4s var(--sm-ease) infinite;
+}
+@keyframes mattingPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+.matting-caption { color: var(--sm-on); font: var(--sm-typo-title-medium); font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) {
+  .idle-slide { animation: none; }
+  .matting-chip { animation: none; }
+}
+.view:not(.is-idle) .hero { opacity: 0; }
+.view .scan {
+  position: absolute; left: 0; right: 0; height: 180px; pointer-events: none; opacity: 0;
+  background: linear-gradient(180deg, transparent, #9FEF0026 45%, #9FEF0040 50%, #9FEF0026 55%, transparent);
+}
+.view.is-scanning .scan { opacity: 1; animation: scan 1.4s var(--sm-ease) infinite; }
+@keyframes scan { 0% { top: -180px; } 100% { top: 100%; } }
+.view .statusline { position: absolute; left: 20px; top: 20px; display: flex; gap: 8px; }
+
+/* ---- 右栏读数 ---- */
+.readout { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+.readout .heroline { display: flex; flex-direction: column; gap: 6px; }
+.readout .heroline .tag { color: var(--sm-brand-ink); font-family: var(--sm-font-mono); font-size: 13px; letter-spacing: 0.06em; }
+
+.metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.metric {
+  padding: 16px 18px; border-radius: var(--sm-radius-lg);
+  background: var(--sm-fill); box-shadow: var(--sm-inset-hair);
+  display: flex; flex-direction: column; gap: 6px;
+}
+.metric .k { font: var(--sm-typo-label-medium); color: var(--sm-on-2); letter-spacing: 0.08em; text-transform: uppercase; }
+.metric .v { font-family: var(--sm-font-mono); font-size: 34px; line-height: 1.1; letter-spacing: -0.01em; }
+.metric .metric-source { font-size: 22px; letter-spacing: -.03em; }
+.metric .v small { font-size: 15px; color: var(--sm-on-2); margin-left: 4px; }
+.metric.wide { grid-column: span 2; }
+.metric.hot { background: #e4f0cf; box-shadow: inset 0 0 0 1px #9fc85873, 0 0 40px #9fc8581a; }
+.metric.warn { background: #f6ddc9; box-shadow: inset 0 0 0 1px #d99b6f66; }
+
+.steps-mini { display: flex; flex-direction: column; gap: 8px; }
+/* 成片是 16:9，小图也按横版比例排 —— 不然 object-fit: cover 会把两侧（含人像）裁掉 */
+.recent { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+.recent .thumb { aspect-ratio: 16 / 9; border-radius: 10px; background: var(--sm-fill); box-shadow: var(--sm-inset-hair); overflow: hidden; min-width: 0; }
+.recent .thumb img { width: 100%; height: 100%; object-fit: contain; background: #101414; }
+.recent .empty { grid-column: 1 / -1; color: var(--sm-on-3); font: var(--sm-typo-body-medium); }
+
+.stagefoot { display: flex; align-items: center; gap: 14px; color: var(--sm-on-3); font: var(--sm-typo-body-small); }
+.stagefoot .foot-lockup { transform: scale(.86); transform-origin: left center; }
+.stagefoot .spacer { flex: 1; }
+.marquee { overflow: hidden; white-space: nowrap; max-width: 46vw; }
+.marquee span { display: inline-block; animation: slide 26s linear infinite; font-family: var(--sm-font-mono); color: var(--sm-on-2); }
+@keyframes slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* 大屏最后一层收敛：信息要读得快，技术读数不能压过人像。 */
+.stage {
+  padding: clamp(20px, 2.4vw, 42px) clamp(22px, 3vw, 56px) clamp(16px, 2vw, 32px);
+  gap: clamp(14px, 1.6vw, 24px);
+}
+.stagebar { gap: 14px; }
+.stagebar .clock { font-size: 14px; font-variant-numeric: tabular-nums; }
+.view { border-radius: 24px; box-shadow: 0 24px 56px #26323b1f, inset 0 0 0 1px #ffffff3d; }
+.view.is-offline::after {
+  content: "取景流暂时没有画面\A请检查摄像头连接";
+  white-space: pre; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  padding: 16px 22px; border-radius: 16px; text-align: center; line-height: 1.55;
+  background: #0d1414d9; color: #eef5e8; box-shadow: inset 0 0 0 1px #ffffff20;
+  font-size: clamp(15px, 1.2vw, 20px); pointer-events: none;
+}
+.view.is-mock::after { content: none; }
+.view.is-offline .camstate { top: calc(50% + 94px); z-index: 2; background: transparent; border: 0; padding: 0; color: #a9bdac; }
+.view.is-offline .hero { opacity: 0 !important; visibility: hidden; }
+/* 这一页的 .hero 只在 .idle-show 里（待机层），而待机层是**页面层**不是浮层，
+   已随主题翻浅 —— 所以文字走主题令牌（浅色主题下即深字），不能写死白色。 */
+.view .hero { z-index: 1; }
+/* 行高必须跟着字号一起放大：字阶令牌是 45px/52px 的定值行高，
+   而这里把字号撑到 76px，行高不跟着走就会「字号溢出行的盒子」，
+   两行标题的第二行压到 .sub 上（叠字）。用无单位行高按比例缩放。 */
+.view .hero .big { font-size: clamp(38px, 4.1vw, 76px); line-height: 1.12; text-wrap: balance; }
+.view .hero .sub { max-width: 34em; font-size: clamp(14px, 1.1vw, 19px); line-height: 1.5; }
+/* 待机层有自己的 hero（position:static），离线时也要跟着退场 */
+.view.is-offline .idle-show { opacity: 0 !important; visibility: hidden; }
+.view.is-mock .idle-slide { opacity: 0.5; }
+.readout { gap: clamp(12px, 1.4vw, 20px); }
+.readout .heroline { gap: 8px; }
+.metrics { gap: 10px; }
+.metric { min-height: 92px; padding: 15px 17px; border-radius: 16px; }
+.metric .k { letter-spacing: .04em; text-transform: none; }
+.metric .v { font-size: clamp(26px, 2.25vw, 40px); font-variant-numeric: tabular-nums; }
+.metric.hot { background: #e4f0cf; box-shadow: inset 0 0 0 1px #9fc85873, 0 0 40px #9fc85814; }
+.recent { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
+/* 成片是暗调的（knowledge/03），缩略图垫底保持深色才不会在边缘露白 */
+.recent .thumb { border-radius: 12px; background: #131918; }
+.degraded-note[hidden] { display: none; }
+.stagefoot { min-height: 28px; }
+.marquee { max-width: 40vw; }
+
+@media (max-width: 1200px) {
+  .stagegrid { grid-template-columns: minmax(0, 1.35fr) minmax(330px, .75fr); gap: 14px; }
+  .metric { padding: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee span { animation: none; }
+}

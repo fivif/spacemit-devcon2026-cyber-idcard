@@ -1,0 +1,40 @@
+赛博开发者证件照 · Cyber Developer ID Card
+Copyright 2026 SpacemiT
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+--------------------------------------------------------------------------------
+第三方组件与素材（Third-party components and assets）
+--------------------------------------------------------------------------------
+
+1. Noto Sans CJK
+   文件：app/assets/fonts/NotoSansCJK-Bold.ttc
+   许可：SIL Open Font License 1.1
+   许可全文：app/assets/fonts/OFL.txt
+   来源：Debian/Bianbu 的 fonts-noto-cjk 软件包，版权归 Google / Adobe 及各字形作者。
+
+2. SpacemiT 名称、Logo 与活动主视觉
+   文件：app/assets/brand/spacemit-logo.svg、app/assets/bg/、app/assets/cards/
+   说明：相关商标、名称与主视觉素材归 SpacemiT 所有，随本项目仅用于
+         DevCon 2026 装置语境。Apache-2.0 不授予商标使用权。
+
+3. 风格预览图与样张
+   文件：app/assets/styles/、app/samples/、app/static/assets/styles/
+   说明：画面中的人物为合成或 AIGC 生成素材，不含真实参会者照片。
+
+4. 机器学习模型
+   说明：人像分割、文本编码、人形检测、抠像模型因体积与分发约定不随仓库提供，
+         使用时请遵守各模型自身的许可条款。
+
+5. 活动采集数据
+   说明：仓库不包含任何现场参会者的照片、掩码、令牌或记录。

@@ -1,0 +1,242 @@
+/* ==========================================================================
+   SpacemiT DevCon 2026 · 装置5「赛博开发者证件照」
+   tokens.css —— 设计令牌单一来源。
+
+   来源：www.spacemit.com 线上 CSS 的 `:root,[data-theme=dark]` 块（官方暗色主题），
+   原样抄录，不猜测、不美化。原始抓取留档在 app/assets/brand/reference/site.css。
+
+   ★ 官方暗色主题本身就是「iOS 深色」的语言：
+     底 #000000 / 面 #232323 / 填充 #7676801F / 描边 #262626 /
+     字阶 57-45-36-32-28-24-22-16-14-12 / 次级文字 #EBEBF573。
+     所以「用 spacemit.com 的元素」与「iOS 25 feel」是同一个方向，不是两件事。
+   ========================================================================== */
+
+:root {
+  /* ---- 原始令牌（官方，暗色主题逐字抄录） ---- */
+  --sm-color-black: #000000;
+  --sm-color-white: #FFFFFF;
+  --sm-color-brand-brand: #9FEF00;
+  --sm-color-brand-brand-container: #202F02;
+  --sm-color-brand-on-brand: #000000;
+  --sm-color-brand-on-brand-container: #97DC0D;
+  --sm-color-color-base-primary: #000000;
+  --sm-color-color-base-on-primary: #FFFFFF;
+  --sm-color-color-base-primary-container: #1E1E20;
+  --sm-color-color-blue-primary: #377FFC;
+  --sm-color-color-blue-primary-container: #0F234B;
+  --sm-color-color-cyan-primary: #03A8A8;
+  --sm-color-color-cyan-primary-container: #012B2C;
+  --sm-color-color-green-primary: #29B15B;
+  --sm-color-color-green-primary-container: #012D09;
+  --sm-color-color-orange-primary: #E16220;
+  --sm-color-color-orange-primary-container: #391E04;
+  --sm-color-color-purple-primary: #A065FC;
+  --sm-color-color-purple-primary-container: #2E0364;
+  --sm-color-color-red-primary: #C4241F;
+  --sm-color-color-red-primary-container: #430708;
+  --sm-color-color-yellow-primary: #DCA60F;
+  --sm-color-color-yellow-primary-container: #392600;
+  --sm-color-container-surface-container: #7676801F;
+  --sm-color-container-surface-container-high: #88888C40;
+  --sm-color-container-surface-container-highest: #79797E66;
+  --sm-color-container-surface-container-low: #7474801F;
+  --sm-color-container-surface-container-lowest: #333333;
+  --sm-color-context-on-surface-variant: #EBEBF573;
+  --sm-color-feedback-error: #E7000C;
+  --sm-color-feedback-error-container: #221B1D;
+  --sm-color-feedback-on-error: #FFEDEA;
+  --sm-color-inverse-inverse-surface: #E4E2E6;
+  --sm-color-line-outline: #262626;
+  --sm-color-line-outline-variant: #FFFFFF0D;
+  --sm-color-scrim: #00000073;
+  --sm-color-state-state-disabled: #EEEEEE33;
+  --sm-color-state-state-disabled-variant: #EEEEEE4D;
+  --sm-color-state-state-hovered: #38383814;
+  --sm-color-state-state-pressed: #76768024;
+  --sm-color-surface-surface: #232323;
+  --sm-color-surface-surface-bright: #202020;
+  --sm-color-surface-surface-dim: #000000;
+
+  /* ---- 字阶（官方原样，含 Inter 与行高） ---- */
+  --sm-typo-display-large: normal 400 57px/64px var(--sm-font);
+  --sm-typo-display-large-emphasized: normal 700 57px/64px var(--sm-font);
+  --sm-typo-display-medium: normal 400 45px/52px var(--sm-font);
+  --sm-typo-display-medium-emphasized: normal 700 45px/52px var(--sm-font);
+  --sm-typo-display-small: normal 400 36px/44px var(--sm-font);
+  --sm-typo-headline-large: normal 400 32px/40px var(--sm-font);
+  --sm-typo-headline-large-emphasized: normal 700 32px/40px var(--sm-font);
+  --sm-typo-headline-medium: normal 400 28px/36px var(--sm-font);
+  --sm-typo-headline-medium-emphasized: normal 700 28px/36px var(--sm-font);
+  --sm-typo-headline-small: normal 400 24px/32px var(--sm-font);
+  --sm-typo-title-large: normal 400 22px/28px var(--sm-font);
+  --sm-typo-title-medium: normal 500 16px/24px var(--sm-font);
+  --sm-typo-title-small: normal 500 14px/20px var(--sm-font);
+  --sm-typo-body-large: normal 400 16px/24px var(--sm-font);
+  --sm-typo-body-medium: normal 400 14px/20px var(--sm-font);
+  --sm-typo-body-medium-emphasized: normal 500 14px/20px var(--sm-font);
+  --sm-typo-body-small: normal 400 12px/16px var(--sm-font);
+  --sm-typo-label-large: normal 500 14px/20px var(--sm-font);
+  --sm-typo-label-medium: normal 500 12px/16px var(--sm-font);
+  --sm-typo-label-small: normal 500 11px/16px var(--sm-font);
+
+  /* ---- 派生：语义别名（改动只在此处） ---- */
+  --sm-font: Inter, system-ui, -apple-system, "SF Pro Text", "SF Pro Display",
+             "PingFang SC", "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC",
+             "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
+  --sm-font-mono: "SF Mono", ui-monospace, "JetBrains Mono", "Roboto Mono", Menlo, Consolas, monospace;
+
+  --sm-bg: var(--sm-color-color-base-primary);            /* 页面底：纯黑 */
+  --sm-surface: var(--sm-color-color-base-primary-container); /* 卡片：#1E1E20 */
+  --sm-surface-2: var(--sm-color-surface-surface);        /* 次级面：#232323 */
+  --sm-surface-bright: var(--sm-color-surface-surface-bright);
+  --sm-fill: var(--sm-color-container-surface-container); /* 控件填充（iOS 系统填充色） */
+  --sm-fill-strong: var(--sm-color-container-surface-container-high);
+  --sm-on: var(--sm-color-white);                         /* 主文字 */
+  --sm-on-2: var(--sm-color-context-on-surface-variant);  /* 次级文字 */
+  --sm-on-3: #EBEBF55C;
+  --sm-outline: var(--sm-color-line-outline);
+  --sm-outline-variant: var(--sm-color-line-outline-variant);
+  --sm-brand: var(--sm-color-brand-brand);
+  --sm-on-brand: var(--sm-color-brand-on-brand);
+  --sm-brand-container: var(--sm-color-brand-brand-container);
+  --sm-brand-on-container: var(--sm-color-brand-on-brand-container);
+  --sm-hover: var(--sm-color-state-state-hovered);
+  --sm-pressed: var(--sm-color-state-state-pressed);
+  --sm-disabled: var(--sm-color-state-state-disabled);
+  --sm-danger: var(--sm-color-feedback-error);
+  --sm-cyan: var(--sm-color-color-cyan-primary);
+  --sm-blue: var(--sm-color-color-blue-primary);
+  --sm-orange: var(--sm-color-color-orange-primary);
+  --sm-yellow: var(--sm-color-color-yellow-primary);
+
+  /* ---- 跨主题「墨色」别名（★ 把品牌绿/告警色当**文字或图标**色时一律用这些）----
+     暗色块里它们就是原始色；浅色块里换成深色。
+     为什么必须单独一层：#9FEF00 在暖白上的对比度只有 1.24:1（#B2E40D 也才 1.31:1），
+     浅底上完全读不出来；而深色的 #4d711e 是 4.98:1，达标。
+     凡是「绿色文字/绿色小圆点/绿色勾选」改主题后要跟着变深的，都该走 --sm-brand-ink；
+     凡是「绿色按钮底/绿色进度条」这种**填充**，仍用 --sm-brand。 */
+  --sm-brand-ink: var(--sm-color-brand-brand);
+  --sm-warn-ink: #FFB27A;
+  --sm-mock-ink: #FFD98A;
+  --sm-danger-ink: #FFB4AE;
+  --sm-danger-container: #C4241F2E;
+  --sm-focus-ring: #9FEF0040;
+
+  /* 页面氛围光（body::before 用）：一层极暗的品牌绿径向光，
+     避免大面积纯黑在屏幕上发灰/起色带。浅色块里换成暖色柔光。 */
+  --sm-atmosphere:
+    radial-gradient(1100px 620px at 12% -10%, #9FEF0014, transparent 62%),
+    radial-gradient(900px 700px at 100% 8%, #03A8A80F, transparent 60%),
+    radial-gradient(1200px 900px at 50% 120%, #FFFFFF08, transparent 60%);
+
+  /* ---- 连续圆角（squircle 近似）：iOS 25 的第一观感来源 ---- */
+  --sm-radius-xs: 8px;
+  --sm-radius-sm: 12px;
+  --sm-radius-md: 16px;
+  --sm-radius-lg: 20px;
+  --sm-radius-xl: 28px;
+  --sm-radius-2xl: 36px;
+  --sm-radius-pill: 999px;
+
+  /* ---- 动效：iOS spring 近似；时长 220–420ms ---- */
+  --sm-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --sm-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --sm-dur-fast: 220ms;
+  --sm-dur: 320ms;
+  --sm-dur-slow: 420ms;
+
+  /* ---- 毛玻璃与光影 ---- */
+  --sm-blur: saturate(180%) blur(30px);
+  --sm-blur-light: saturate(160%) blur(14px);
+  --sm-shadow-1: 0 1px 2px #00000066, 0 8px 24px #00000059;
+  --sm-shadow-2: 0 2px 6px #00000080, 0 24px 60px #00000080;
+  --sm-inset-hair: inset 0 1px 0 #FFFFFF14, inset 0 0 0 1px #FFFFFF0F;
+  --sm-glow: 0 0 0 1px #9FEF0040, 0 0 24px #9FEF0029, 0 0 64px #9FEF0014;
+
+  /* ---- 版式节奏 ---- */
+  --sm-gap-1: 4px;
+  --sm-gap-2: 8px;
+  --sm-gap-3: 12px;
+  --sm-gap-4: 16px;
+  --sm-gap-5: 24px;
+  --sm-gap-6: 32px;
+  --sm-gap-7: 48px;
+  --sm-gap-8: 64px;
+}
+
+/* ==========================================================================
+   [data-theme=light] —— 现场界面浅色块
+
+   作用域：只管**界面**（大屏 / 竖屏 / 操作员 / 拍摄位 / 报名 / 取图页）。
+   **成片仍是暗调**（见 knowledge/03-视觉规格-暗调.md）—— 不要因为界面改浅
+   就去动早期原型的配色板、水印带与「全图平均亮度 15–35」的验收指标。
+
+   ★ 取景框内部（.view / .vmain .view / .stagebox）**故意保持深色**：
+     stage.css 的抠像掩码用 mix-blend-mode: screen，该混合只提亮不压暗，
+     压在浅底上会整块变白、掩码彻底看不见。深色取景框也是相机取景器的语义。
+
+   ★ 官方 spacemit.com 的 [data-theme=light] 块（抄录于
+     app/assets/brand/reference/site.css，字符偏移 ~9866）是**冷灰系**，
+     本项目界面用的是**暖白系**（#f1f0ea / #fffdf9 / #1c2a31），已在三个页面
+     沉淀了数百处。所以这里只逐字抄官方少数几个值，面/字/描边走暖白。
+   ========================================================================== */
+[data-theme=light] {
+  /* ---- A 段：官方浅色值（逐字抄录，带出处）---- */
+  --sm-color-brand-brand: #B2E40D;
+  --sm-color-brand-brand-container: #EDFFDC;
+  --sm-color-brand-on-brand-container: #4EA100;
+  --sm-color-surface-surface: #F5F5F5;
+  --sm-color-surface-surface-bright: #FFFFFF;
+  --sm-color-line-outline: #D9D9D9;
+  --sm-color-context-on-surface-variant: #3C3C4399;
+  --sm-color-scrim: #0000001A;
+
+  /* ---- B 段：派生别名重指暖白 -----------------------------------------
+     必须整段重写、不能只靠 A 段：官方浅色块的 --sm-color-color-base-primary
+     仍是 #000000（官方当「主色」用），而 --sm-bg 别名到它 ——
+     只抄 A 段的话页面底依然是纯黑，这是最容易踩的坑。 */
+  --sm-bg: #f1f0ea;
+  --sm-surface: #fffdf9;
+  --sm-surface-2: #fffefa;
+  --sm-surface-bright: #FFFFFF;
+  --sm-fill: #26323b14;
+  --sm-fill-strong: #26323b26;
+  --sm-on: #1c2a31;
+  --sm-on-2: #66727c;
+  --sm-on-3: #78827f;   /* 原暗色是 #EBEBF55C；浅色下必须是不透明深灰，否则读不出 */
+  --sm-outline: #26323b26;
+  --sm-outline-variant: #26323b12;
+  --sm-brand: #9fc858;          /* 填充用：按钮底 / 进度点 */
+  --sm-on-brand: #26323b;       /* 深字压浅绿 = 6.79:1 ✅ */
+  --sm-brand-container: #e4f0cf;
+  --sm-brand-on-container: #4d711e;
+  --sm-hover: #26323b0d;
+  --sm-pressed: #26323b1a;
+  --sm-disabled: #00000033;
+  --sm-danger: #9b322c;
+  --sm-cyan: #017b7b;
+  --sm-blue: #1d5fd6;
+  --sm-orange: #b4531a;
+  --sm-yellow: #8a6a08;
+
+  /* 墨色别名：浅色下品牌绿/告警色当文字用时必须换成深色 */
+  --sm-brand-ink: #4d711e;      /* 4.98:1 ✅（暗色是 #9FEF00，仅 1.24:1 ✗） */
+  --sm-warn-ink: #945228;       /* 5.91:1 ✅ */
+  --sm-mock-ink: #8a6414;       /* 与 auto-flow.css 的 warn 色一致 */
+  --sm-danger-ink: #9b322c;     /* 7.16:1 ✅ */
+  --sm-danger-container: #f4d4d1;
+  --sm-focus-ring: #4d711e59;
+
+  /* ---- 光影：暗色块里这三条写死黑白字面量，必须单独换 ----
+     浅底上的阴影要用暖黑（#26323b 系），纯黑 #00000066 会显脏；
+     内高光在浅底上会消失，改成极浅的暖白才有「浮起」感。 */
+  --sm-shadow-1: 0 1px 2px #26323b14, 0 8px 24px #26323b1a;
+  --sm-shadow-2: 0 2px 6px #26323b1f, 0 24px 60px #26323b26;
+  --sm-inset-hair: inset 0 1px 0 #FFFFFFB3, inset 0 0 0 1px #26323b12;
+  --sm-glow: 0 0 0 1px #9fc85873, 0 0 24px #9fc8583d, 0 0 64px #9fc8581a;
+
+  /* 氛围光：暖色柔光，替代暗色块的品牌绿+青+白三层径向光 */
+  --sm-atmosphere:
+    radial-gradient(620px 420px at 92% -8%, #d7e9e1b8, transparent 72%),
+    radial-gradient(500px 360px at 0% 100%, #f3d9c2a0, transparent 74%);
+}

@@ -1,0 +1,11 @@
+# 统一换行：仓库内存 LF，检出时按平台转换
+* text=auto eol=lf
+
+# 二进制素材不做换行/差异处理
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ttc binary
+*.onnx binary
+*.mp4 binary
+*.pdf binary

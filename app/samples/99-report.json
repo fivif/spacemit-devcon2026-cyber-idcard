@@ -1,0 +1,49 @@
+{
+ "styles": [
+  "natural"
+ ],
+ "rows": [
+  {
+   "tag": "plate/natural",
+   "size": [
+    1000,
+    1250
+   ],
+   "mean_luma": 36.98,
+   "hi_luma_pct": 0.25,
+   "hi_max_pct": 4.33,
+   "detail_pct": 3.18,
+   "ok_metrics": true,
+   "ok_detail": true
+  },
+  {
+   "tag": "vertical/natural",
+   "size": [
+    1000,
+    1250
+   ],
+   "mean_luma": 25.85,
+   "hi_luma_pct": 1.94,
+   "hi_max_pct": 3.72,
+   "detail_pct": 9.15,
+   "ok_metrics": true,
+   "ok_detail": true
+  },
+  {
+   "tag": "horizontal/natural",
+   "size": [
+    1600,
+    1000
+   ],
+   "mean_luma": 32.27,
+   "hi_luma_pct": 1.58,
+   "hi_max_pct": 4.74,
+   "detail_pct": 15.12,
+   "ok_metrics": true,
+   "ok_detail": true
+  }
+ ],
+ "failures": [],
+ "elapsed_s": 12.6,
+ "samples_dir": "samples"
+}

@@ -1,0 +1,13 @@
+# 运行依赖。K3（Bianbu）镜像通常已预装 cv2 / onnxruntime / spacemit_ort，
+# 该平台上无需 pip 安装；本文件用于在普通 Linux / macOS 开发机上复现界面与测试。
+#
+# pip install -r requirements.txt
+
+Pillow>=9.0
+numpy>=1.24
+
+# 本机没有系统 OpenCV 时再装；K3 上不需要。
+# opencv-python-headless>=4.8
+
+# 普通 x86/ARM 开发机上的推理后端；K3 上使用系统自带的 spacemit_ort。
+# onnxruntime>=1.15

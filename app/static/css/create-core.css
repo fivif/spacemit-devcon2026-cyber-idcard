@@ -1,0 +1,141 @@
+/* create-core.css —— 竖屏「生成之核」等待动效（/vertical）
+ *
+ * 层浮在深色取景画面上，所以颜色显式写死浅色系（同 .pipeline / .vresult 的纪律），
+ * 绿色统一用 #9FEF00（在深底上 14:1 对比）。字号走 clamp(vh, vw)，因为这块屏
+ * 是竖屏且人站在一两米外看。
+ *
+ * 纪律：这块画面里出现的每一个数字都必须来自后端真实数据；
+ * 装饰（辉光、粒子、旋转）可以随便做，读数不行。
+ */
+/* 层级：必须低于 .countdown（z-index 6）和 .flash（7）、.vresult（8）。
+   倒计时那 3 秒是"要放下手保持姿势"的关键瞬间，不能被动效盖住。 */
+.vcore {
+  position: absolute; inset: 0; z-index: 5;
+  opacity: 0; visibility: hidden;
+  transition: opacity 420ms var(--sm-ease), visibility 420ms;
+  pointer-events: none;
+  /* 不透明：这一层是"机器正在生成"，底下压着的冻结帧、抠像浮层、
+     取景预览都不该透出来（2026-10-15 截图看到镜像反的字从底下透上来）。
+     成片浮出时用的是层内 canvas 画的，不依赖底层。 */
+  background: radial-gradient(circle at 50% 47%, #0A100A 0%, #05070A 58%, #030405 100%);
+}
+.vcore.is-on { opacity: 1; visibility: visible; }
+
+/* 画布：粒子云 + 阶段圆环 + 真实成片浮出 */
+.vcore-fx { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* 顶部标签条：左「当前阶段」中「人像模式」右「已用时长」 */
+.vcore-head {
+  position: absolute; top: clamp(18px, 2.6vh, 44px); left: 0; right: 0; z-index: 3;
+  display: flex; align-items: center; justify-content: center;
+  gap: clamp(8px, 1.2vw, 18px);
+  padding: 0 clamp(20px, 4vw, 56px);
+}
+.vcore-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: clamp(7px, .8vh, 13px) clamp(14px, 1.8vw, 26px);
+  border-radius: 999px;
+  background: #FFFFFF0F;
+  border: 1px solid #FFFFFF1F;
+  color: #E8F0E6;
+  font-size: clamp(15px, 1.7vh, 26px);
+  white-space: nowrap;
+  letter-spacing: .02em;
+}
+.vcore-tag.is-style { color: #9FEF00; border-color: #9FEF0047; background: #9FEF0012; }
+.vcore-tag.is-live::before {
+  content: ""; width: 7px; height: 7px; border-radius: 50%;
+  background: #9FEF00; box-shadow: 0 0 10px #9FEF00B3;
+  animation: vcorePulse 1.3s var(--sm-ease) infinite;
+}
+@keyframes vcorePulse { 0%, 100% { opacity: 1; } 50% { opacity: .22; } }
+
+/* 阶段名（大字，站远处也读得清）
+   ★ 位置纪律：从前它和底部注释条各用绝对定位，实测在大字标题上直接叠住了胶囊
+   （2026-10-15 截图确认）。现在两者同属 .vcore-bottom 一个流式容器，
+   上下排布，不再可能相撞。 */
+.vcore-bottom {
+  position: absolute; left: 0; right: 0; bottom: clamp(16px, 2.6vh, 46px); z-index: 3;
+  display: grid; justify-items: center; gap: clamp(10px, 1.4vh, 22px);
+  padding: 0 clamp(20px, 4vw, 56px);
+}
+.vcore-phase {
+  text-align: center; width: max-content; max-width: 100%;
+}
+.vcore-phase .kicker {
+  display: block;
+  font-family: var(--sm-font-mono);
+  font-size: clamp(13px, 1.4vh, 20px);
+  letter-spacing: .2em; color: #9FEF00B3; text-transform: uppercase;
+}
+.vcore-phase .title {
+  display: block; margin-top: clamp(4px, .6vh, 9px);
+  font-size: clamp(26px, 3.4vh, 56px); font-weight: 800;
+  color: #FFFFFF; letter-spacing: .01em;
+}
+/* 「已经拍好了」：抓帧那一步给一句，进入分割/重绘后淡出 —— 不能让人
+   在已经拍完之后还僵在原地保持姿势。 */
+.vcore-phase .pose-hint {
+  display: block; margin-top: clamp(6px, .9vh, 14px);
+  font-size: clamp(15px, 1.7vh, 26px);
+  color: #C9D6C6;
+  transition: opacity 500ms var(--sm-ease);
+}
+.vcore-phase .pose-hint.is-off { opacity: 0; }
+
+/* 底部：真实步骤注释 + 计时（不是进度条清单，是轻注释） */
+.vcore-foot {
+  display: grid; justify-items: center; gap: clamp(6px, .9vh, 14px);
+}
+.vcore-steps {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: clamp(6px, .7vw, 12px);
+}
+.vcore-chip {
+  display: inline-flex; align-items: baseline; gap: 8px;
+  padding: clamp(5px, .6vh, 10px) clamp(11px, 1.2vw, 20px);
+  border-radius: 10px;
+  background: #FFFFFF0D;
+  border: 1px solid #FFFFFF17;
+  font-size: clamp(13px, 1.35vh, 21px);
+  color: #C9D6C6;
+  white-space: nowrap;
+  animation: vcoreChipIn 420ms var(--sm-ease) both;
+}
+.vcore-chip b { font-weight: 600; color: #E8F0E6; }
+.vcore-chip i {
+  font-style: normal;
+  font-family: var(--sm-font-mono);
+  font-variant-numeric: tabular-nums;
+  color: #9FEF00CC;
+}
+.vcore-chip.is-matte { border-color: #9FEF0040; background: #9FEF0012; }
+@keyframes vcoreChipIn { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+
+.vcore-timer {
+  font-family: var(--sm-font-mono);
+  font-size: clamp(14px, 1.5vh, 23px);
+  color: #FFFFFF8A; letter-spacing: .1em;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vcore-tag.is-live::before { animation: none; }
+  .vcore-chip { animation: none; }
+}
+
+/* 生成之核接管期间：该让位的兄弟层让位。
+   ★ 必须逐个点名，不能用 `.view.is-core > *` —— .vcore 自己就是 .view 的
+   直接子元素，那样写会把动效本身一起隐掉（2026-10-15 截图全黑就是这个）。
+   让位的是：待机轮播、取景预览、手势框 canvas、旧抠像浮层、旧风格浮层。
+   留在原位的是：.vcore（本层）、.countdown（z 6，高于本层）、
+   .flash（7）、.vresult（8）、.vprompt（5，同层但只在门阶段用）。 */
+.vmain .view.is-core > .idle-show,
+.vmain .view.is-core > img.preview,
+.vmain .view.is-core > canvas.boxes,
+.vmain .view.is-core > .mask,
+.vmain .view.is-core > .matting,
+.vmain .view.is-core > .style-stage,
+.vmain .view.is-core > .camstate {
+  visibility: hidden;
+}

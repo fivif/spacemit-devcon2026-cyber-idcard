@@ -1,0 +1,139 @@
+# 装置 5 · 赛博开发者证件照 —— 现场控制面（开机自启 + 崩溃重启）
+#
+# 装机位置：/etc/systemd/system/devcon-booth.service
+# 上线步骤：见 /opt/devcon/app/deploy/README.md
+#   install -m 0644 /opt/devcon/app/deploy/devcon-booth.service /etc/systemd/system/
+#   systemctl daemon-reload && systemctl enable --now devcon-booth
+#
+# 两条「按现场实际」的取舍，理由写在这里，免得下次有人照抄教程改坏：
+#
+# ① 为什么是 network-online.target 而不是 network.target
+#    本装置**不需要公网**（断网必须 100% 可用），但它需要**一个局域网地址**：
+#    取图二维码里的链接取自 booth_server.lan_ip()（UDP connect 10.255.255.255 探本机地址），
+#    网卡还没拿到地址时会退到 127.0.0.1，二维码就指不到手机能访问的地址。
+#    network.target 只代表「网络栈起来了」，不保证已经拿到地址；network-online.target 才保证。
+#    所以 Wants+After 都用 network-online.target。最坏情况（现场没插网线）也只是延后启动
+#    ≤30s，服务照常起、照常出图。若现场是固定 IP，建议再显式钉住：
+#    Environment=BOOTH_PUBLIC_HOST=192.0.2.10  （见 deploy/README.md「二维码地址」一节）
+#
+# ② 为什么 WantedBy=multi-user.target（不是 graphical.target）
+#    本服务只做 HTTP + V4L2 抓帧 + 子进程推理，不碰 X/Wayland。挂在 multi-user.target 才能
+#    保证「桌面（SDDM/labwc）挂了、服务还在」—— 大屏 kiosk 反而是它的下游。
+#    大屏单独一份单元，见 deploy/README.md 里的 devcon-stage.service 片段（After=devcon-booth）。
+#
+# ③ 相机为什么不做 udev 依赖（故意不写 After=systemd-udev-settle）
+#    camera.py 每次抓帧都会重新解析 by-id 并带 2s 退避重连，USB 枚举慢一点会自愈；
+#    而 udev-settle 会把开机拖慢几十秒，对「开机就要能用」的现场是净损失。
+
+[Unit]
+Description=SpacemiT DevCon 2026 装置5 · 赛博开发者证件照（控制面，HTTP :8090）
+Documentation=file:/opt/devcon/app/deploy/README.md
+After=network-online.target
+Wants=network-online.target
+# 无人值守：崩了就无限重启，不受 systemd 默认的「10 秒内 5 次」起停频率限制
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/devcon/app
+ExecStart=/usr/bin/python3 /opt/devcon/app/booth_server.py
+
+# 崩溃自动重启。RestartSec 给足 2s，让 AI 核线程槽（全板只有 8 个）有机会被内核回收，
+# 否则重启太快会撞上 "Not enough available AI cores" 而静默退回 CPU。
+Restart=always
+RestartSec=2
+
+# 端口与数据（路径都写绝对路径：WorkingDirectory 变了也不会写错地方）
+Environment=BOOTH_PORT=8090
+Environment=BOOTH_HOST=0.0.0.0
+Environment=BOOTH_DATA=/opt/devcon/app/data
+Environment=BOOTH_PUBLIC_HOST=192.0.2.10
+
+# 合规：默认不记访问日志（不落 IP）；同意令牌 10 分钟有效
+Environment=BOOTH_ACCESS_LOG=0
+Environment=BOOTH_CONSENT_TTL=600
+# 推理超时 2.5s：超过就降级出图（规格 §9），不让参会者干等
+Environment=BOOTH_INFER_TIMEOUT=2.5
+Environment=BOOTH_PREVIEW_FPS=15
+Environment=BOOTH_PREVIEW_QUALITY=70
+Environment=BOOTH_PREVIEW_STREAM_SIZE=1280x720
+Environment=BOOTH_MEDIA_PUBLISH_ENABLED=1
+Environment=BOOTH_MEDIA_RTSP_URL=rtsp://127.0.0.1:8554/booth
+Environment=BOOTH_MEDIA_WHEP_URL=http://127.0.0.1:8889/booth/whep
+Environment=BOOTH_MEDIA_ENCODER=h264_stcodec
+Environment=BOOTH_MEDIA_BITRATE=4M
+Environment=BOOTH_MEDIA_MAXRATE=5M
+Environment=BOOTH_MEDIA_BUFSIZE=2M
+Environment=BOOTH_PREVIEW_SIZE=2560x1440
+Environment=BOOTH_PHOTO_SIZE=2560x1440
+# 默认原色：参会者拿到的证件照得是他本人的颜色。暗调四档仍在，
+# 现场可用拍摄位的风格按钮临时切；要自动轮转再加 BOOTH_STYLE_ROTATE=1。
+Environment=BOOTH_STYLE=natural
+
+# 生产能力开关：未完成对应设备/合规验收前保持关闭。
+Environment=BOOTH_QUEUE_ENABLED=true
+Environment=BOOTH_QUEUE_START_TIMEOUT_SECONDS=120
+Environment=BOOTH_QUEUE_IDEMPOTENCY_TTL_SECONDS=86400
+Environment='BOOTH_OPTIONAL_FIELDS_ALLOWLIST=["display_name","developer_id"]'
+Environment=BOOTH_GESTURE_ENABLED=true
+# 手势是自动化加速器；连续不可用时允许回到按钮拍摄。生产确认模型后可开启。
+Environment=BOOTH_GESTURE_ENGINE=official_yolo
+Environment=BOOTH_GESTURE_TYPE=ok
+# 识别只负责自动触发；不可用时由操作员/拍摄位按钮继续，不锁死队列。
+Environment=BOOTH_GESTURE_STABLE_FRAMES=2
+Environment=BOOTH_GESTURE_MIN_CONFIDENCE=0.70
+Environment=BOOTH_GESTURE_PROBE_INTERVAL=0.5
+Environment=BOOTH_CAPTURE_COUNTDOWN_SECONDS=5
+Environment=BOOTH_PRESENTATION_MODE=full
+Environment=BOOTH_AIGC_HANDOFF_DELAY_SECONDS=5
+Environment=BOOTH_GESTURE_REQUIRE_SINGLE_PERSON=true
+Environment=BOOTH_GESTURE_REQUIRE_IN_FRAME=true
+Environment=BOOTH_AIGC_ENABLED=false
+Environment=BOOTH_AIGC_TERMS_APPROVED=false
+Environment=BOOTH_PRINTER_ENABLED=false
+Environment=BOOTH_PRINTER_BACKEND=none
+Environment=BOOTH_REDACT_TOKENS=true
+# 兼容 v1 内联 AIGC 外发开关，也明确保持关闭。
+Environment=AIGC_ENABLED=0
+Environment=AIGC_BACKEND=disabled
+Environment=BOOTH_PHOTO_RETENTION_DAYS=1
+
+# 模型路径：与 infer/worker.py 的默认值一致，这里显式写死，避免「默认值什么时候被改过」的暗雷
+Environment=BOOTH_SEG_MODEL=/opt/devcon/assets/models/yoloe-v8s-seg.dynq.onnx
+Environment=BOOTH_CLIP_MODEL=/opt/devcon/assets/models/mobileclip.q.onnx
+Environment=BOOTH_DET_MODEL=/usr/share/yolo-demo/yolov8/yolov8n.q.onnx
+# K3 Python ORT 实测多个 EP Session 交替运行会触发 TCM buffer 冲突。
+# 生产只保留分割与手势两个 AI Session；普通 det 已无生产调用。
+Environment=BOOTH_EP_THREADS_SEG=4
+Environment=BOOTH_DET_ENABLED=false
+Environment=BOOTH_EP_THREADS_DET=2
+Environment=BOOTH_GESTURE_MODEL=/opt/devcon/assets/models/gesture/yolov5_gesture.q.onnx
+Environment=BOOTH_GESTURE_DEVICE=ep
+Environment=BOOTH_EP_THREADS_GESTURE=4
+Environment=BOOTH_ORT_THREADS=1
+
+# 解释器与缓冲：/usr/bin/python3（3.14.4，自带 cv2/ORT/spacemit_ort）—— 禁止 venv、禁止 pip
+Environment=BOOTH_PYTHON=/usr/bin/python3
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONUTF8=1
+# 可选：现场临时覆盖用（文件不存在也不报错，前缀 - 就是「允许没有」）
+EnvironmentFile=-/etc/devcon/booth.env
+
+# 现场排障时常用的两步：重启服务 / 一键恢复
+#   systemctl restart devcon-booth
+#   curl -s -X POST http://127.0.0.1:8090/api/operator/restore
+KillSignal=SIGTERM
+TimeoutStopSec=20
+
+# root 不是偷懒：/dev/video1 抓帧 + libspine_tcm 释放 AI 核残留都需要权限，
+# 真机验证也是以 root 跑的；现场别改成普通用户。
+User=root
+Group=root
+
+# 日志全部走 journald（journalctl -u devcon-booth -f）
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=devcon-booth
+
+[Install]
+WantedBy=multi-user.target

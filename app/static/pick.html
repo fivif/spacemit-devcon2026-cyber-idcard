@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F3F2EC">
+<!-- __BUILD__ 换成页面版本：刷新时必拿到与这份 HTML 配套的 CSS/JS。
+     build-guard=manual —— 这是扫码进来的一次性页面，不自动刷新：
+     用户可能正停在系统分享面板上。 -->
+<meta name="build" content="__BUILD__">
+<meta name="build-guard" content="manual">
+<title>取图 · SpacemiT DevCon 2026</title>
+<link rel="icon" href="/static/assets/brand/spacemit-logo.svg?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/tokens.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/base.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/pick.css?v=__BUILD__-wechat-save-1">
+<link rel="stylesheet" href="/static/css/ui-polish.css?v=__BUILD__">
+<style>
+  /* T-7 删除确认（两步）：默认隐藏，点「删除我的照片」后才展开。
+     配色沿用 danger-zone 的暖红，不引入任何外部资源。 */
+  .delete-confirm {
+    margin-top: 14px; padding: 16px 16px 14px; display: grid; gap: 10px;
+    border-radius: var(--sm-radius-lg); background: #fff8f6;
+    box-shadow: inset 0 0 0 1px #d78a8480;
+  }
+  .delete-confirm h2 { color: #7c2d27; font-size: 17px; line-height: 1.3; }
+  .delete-confirm .note { color: #8a5a55; }
+  .delete-confirm-code { color: #7c2d27; line-height: 1.6; }
+  .delete-confirm-code b { font-family: var(--sm-font-mono); font-size: 22px; letter-spacing: .18em; }
+  .delete-confirm-input {
+    width: 100%; height: 46px; padding: 0 14px; border: 0;
+    border-radius: var(--sm-radius-sm, 12px); background: #fffdf9;
+    box-shadow: inset 0 0 0 1px #d78a84;
+    font-family: var(--sm-font-mono); font-size: 20px; letter-spacing: .3em;
+    text-align: center; color: #26323b;
+  }
+  .delete-confirm-input:focus { outline: 2px solid #d78a84; outline-offset: 1px; }
+  .delete-confirm-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .delete-confirm-error { color: #9b322c; }
+
+  /* 取图二维码：浅底白卡，和本页其他卡片同一套观感。 */
+  .share-qr {
+    margin-top: 18px; padding: 16px; display: grid; gap: 10px; justify-items: center;
+    border-radius: var(--sm-radius-lg); background: #fffdf9;
+    box-shadow: inset 0 0 0 1px #26323b1f;
+  }
+  .share-qr .label { justify-self: start; }
+  .share-qr img { display: block; width: 168px; height: 168px; background: #fff; border-radius: 8px; }
+  .share-qr .note { text-align: center; }
+  .print-note { margin-top: 10px; }
+  .pick .print-note.is-error { color: #9b322c; }
+  .pick .print-note.is-done { color: #4d711e; }
+  .pick .print-media { margin-top: -12px; overflow-wrap: anywhere; }
+  .pick #print { height: auto; min-height: 48px; padding-top: 10px; padding-bottom: 10px; text-align: center; }
+</style>
+</head>
+<body>
+<main class="pick" id="pick">
+
+  <header class="head">
+    <span class="lockup">
+      <img class="mark" src="/static/assets/brand/spacemit-logo.svg?v=__BUILD__" alt="SpacemiT" width="26" height="33">
+      <span class="word"><b>SpacemiT</b><span>DevCon 2026</span></span>
+    </span>
+    <span class="spacer"></span>
+    <span class="badge" id="badge-ep">—</span>
+  </header>
+
+  <section class="pick-title" aria-labelledby="pick-heading">
+    <h1 id="pick-heading">你的开发者证件照</h1>
+  </section>
+
+  <div class="photo"><img id="shot" alt="你的开发者证件照"></div>
+  <p class="note save-hint" id="save-hint" hidden>微信内点保存，再长按图片存入相册。</p>
+
+  <div class="ident">
+    <div>
+      <span class="label">编号</span>
+      <div class="serial mono" id="serial">—</div>
+      <p class="note" id="photo-portrait-mode">写实版</p>
+    </div>
+    <!-- 只有照片被删除时才显示（「已删除」），平时不占位 -->
+    <span class="badge" id="badge-state" hidden>—</span>
+  </div>
+
+  <div class="actions">
+    <a class="btn btn-primary" id="save" download>保存带标识版</a>
+    <a class="btn" id="save-clean" download hidden>保存无标识版</a>
+    <button class="btn" id="print" type="button" disabled aria-disabled="true" aria-describedby="print-media print-note">开始打印</button>
+    <button class="btn btn-ghost full" id="share" type="button">分享图片</button>
+    <button class="btn btn-ghost full" id="save-help" type="button" aria-expanded="false" aria-controls="save-preview">保存到手机</button>
+  </div>
+
+  <section class="save-preview" id="save-preview" aria-labelledby="save-preview-title" hidden>
+    <div class="save-preview-head">
+      <h2 id="save-preview-title" tabindex="-1">保存带标识版</h2>
+      <button class="btn btn-sm" id="save-preview-close" type="button">收起</button>
+    </div>
+    <div class="save-versions" role="group" aria-label="保存的图片版本">
+      <button class="btn btn-sm" id="save-version-marked" type="button" aria-pressed="true">带标识版</button>
+      <button class="btn btn-sm" id="save-version-clean" type="button" aria-pressed="false" hidden>无标识版</button>
+    </div>
+    <p class="note" id="save-preview-status" role="status" aria-live="polite">正在加载图片…</p>
+    <img id="save-preview-image" alt="可长按保存的带标识版证件照" hidden>
+    <a class="btn" id="save-open-image" target="_blank" rel="noopener" hidden>打开完整图片</a>
+    <p class="note" id="save-browser-tip">如果没有保存选项，请在 Safari 或系统浏览器打开此页面再保存。</p>
+    <button class="btn btn-ghost" id="save-copy-link" type="button">复制取图链接</button>
+    <input class="save-link" id="save-link" aria-label="取图链接，可长按复制" type="text" readonly hidden>
+  </section>
+
+  <p class="note print-media" id="print-media">54×86 mm 卡片</p>
+  <p class="note print-note" id="print-note" role="status" aria-live="polite" aria-atomic="true"></p>
+
+  <!-- 取图二维码：扫它 = 在这台手机上打开同一张照片。
+       场景：同伴想拿原图，或自己换台设备再存一次。令牌就在当前 URL 里，
+       所以二维码指向本页自身，而不是另建一条链接。 -->
+  <section class="share-qr" id="share-qr">
+    <span class="label">扫码取图</span>
+    <img id="qr" alt="取图二维码" width="168" height="168">
+    <span class="note">用另一台手机扫码，可打开同一张照片。</span>
+  </section>
+
+  <div class="danger-zone">
+    <button class="btn btn-danger" id="delete" type="button" aria-expanded="false" aria-controls="delete-confirm">删除我的照片</button>
+    <p class="note">删除后本页链接立即失效，照片从装置本机移除，不可恢复。</p>
+
+    <!-- T-7：两步删除确认。第一步看后果说明，第二步输入面板里显示的数字才放行。 -->
+    <section class="delete-confirm hide" id="delete-confirm" role="alertdialog"
+             aria-labelledby="delete-confirm-title" aria-describedby="delete-confirm-desc">
+      <h2 id="delete-confirm-title">确认删除这张照片？</h2>
+      <p class="note" id="delete-confirm-desc">删除后，取图、缩略图与二维码入口会同时失效，照片从装置本机移除，不可恢复。</p>
+      <p class="delete-confirm-code">请在下面输入数字 <b id="delete-confirm-code">----</b> 以确认：</p>
+      <label class="note" for="delete-confirm-input">确认数字</label>
+      <input class="delete-confirm-input mono" id="delete-confirm-input" type="text"
+             inputmode="numeric" pattern="[0-9]*" autocomplete="off" maxlength="4" placeholder="4 位数字">
+      <div class="delete-confirm-actions">
+        <button class="btn" id="delete-cancel" type="button">取消</button>
+        <button class="btn btn-danger" id="delete-confirm-go" type="button" disabled>永久删除</button>
+      </div>
+      <p class="note hide" id="delete-confirm-error" role="alert"></p>
+    </section>
+  </div>
+
+  <div id="gone" class="hide">
+    <div class="caption">
+      <b>照片已删除</b><br>
+      这张照片已经从装置本机移除，取图链接不再有效。感谢参与 SpacemiT DevCon 2026。
+    </div>
+  </div>
+</main>
+
+<script src="/static/js/net.js?v=__BUILD__"></script>
+<script src="/static/js/pick.js?v=__BUILD__-wechat-save-1"></script>
+<script>
+/* 取图页删除确认流程（T-7）：点「删除我的照片」→ 展开两步确认（输入面板里
+   显示的数字）→ 调 DELETE → 状态更新为「已删除」。查看 / 保存 / 复制 / 分享
+   以及 meta / 图片加载逻辑都在 pick.js 里，未被改动。
+   为什么不用系统 window.confirm：手机上容易被误触连点跳过；删除是不可逆操作，
+   这里要求输入确认数字，多一步、可看清。 */
+(function () {
+  "use strict";
+  const { $, api, toast } = window.Booth;
+  const recordToken = decodeURIComponent((location.pathname.split("/").pop() || "").trim());
+  const el = {
+    trigger: $("#delete"), panel: $("#delete-confirm"), code: $("#delete-confirm-code"),
+    input: $("#delete-confirm-input"), go: $("#delete-confirm-go"), cancel: $("#delete-cancel"),
+    error: $("#delete-confirm-error"), badgeState: $("#badge-state"),
+    pick: $("#pick"), gone: $("#gone"),
+  };
+  let expectedCode = "";
+
+  function setError(message) {
+    if (!el.error) return;
+    el.error.textContent = message || "";
+    el.error.classList.toggle("hide", !message);
+  }
+
+  function openConfirm() {
+    if (!recordToken) { toast("链接不完整，无法删除"); return; }
+    expectedCode = String(1000 + Math.floor(Math.random() * 9000));
+    el.code.textContent = expectedCode;
+    el.input.value = "";
+    el.go.disabled = true;
+    el.go.textContent = "永久删除";
+    setError("");
+    el.panel.classList.remove("hide");
+    el.trigger.setAttribute("aria-expanded", "true");
+    el.input.focus();
+    try { el.panel.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
+    catch (err) { el.panel.scrollIntoView(); }
+  }
+
+  function closeConfirm() {
+    el.panel.classList.add("hide");
+    el.trigger.setAttribute("aria-expanded", "false");
+    setError("");
+  }
+
+  function refreshConfirmState() {
+    el.go.disabled = el.input.value.trim() !== expectedCode;
+  }
+
+  function markDeleted(message) {
+    el.pick.classList.add("is-gone");
+    el.gone.classList.remove("hide");
+    el.badgeState.textContent = "已删除";
+    el.badgeState.className = "badge badge-degraded";
+    if (message) toast(message);
+  }
+
+  async function performDelete() {
+    if (!recordToken) { setError("链接不完整，无法删除"); return; }
+    if (el.input.value.trim() !== expectedCode) { refreshConfirmState(); return; }
+    el.go.disabled = true;
+    el.go.textContent = "正在删除…";
+    setError("");
+    try {
+      await api.del("/api/photo/" + recordToken);
+      closeConfirm();
+      markDeleted("已删除，取图链接已失效");
+    } catch (err) {
+      if (err && (err.status === 410 || err.status === 404)) {
+        /* 别的设备已经先删过：结果同样不可恢复，直接按已删除展示 */
+        closeConfirm();
+        markDeleted("这张照片此前已被删除");
+        return;
+      }
+      el.go.textContent = "永久删除";
+      el.go.disabled = false;
+      setError("删除失败：" + ((err && err.message) || "请重试"));
+    }
+  }
+
+  function bindDeleteFlow() {
+    if (!el.trigger || !el.panel) return;
+    /* pick.js 已在按钮上绑了一步删除（window.confirm）。抽掉它：克隆节点不
+       复制事件监听，再用同样的类名和文案放回去 —— 外观不变，只把删除交互换成
+       这里的确认流程。查看 / 保存 / 复制 / 分享不受影响。 */
+    const fresh = el.trigger.cloneNode(true);
+    el.trigger.parentNode.replaceChild(fresh, el.trigger);
+    el.trigger = fresh;
+    el.trigger.setAttribute("aria-expanded", "false");
+    el.trigger.setAttribute("aria-controls", "delete-confirm");
+    el.trigger.addEventListener("click", openConfirm);
+    el.cancel.addEventListener("click", closeConfirm);
+    el.input.addEventListener("input", refreshConfirmState);
+    el.input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") { event.preventDefault(); performDelete(); }
+      if (event.key === "Escape") closeConfirm();
+    });
+    el.go.addEventListener("click", performDelete);
+  }
+
+  /* 暴露给人工检查与浏览器自动化（T-18）：三个动作 + 当前确认码 + 页面状态 */
+  window.PickDeleteFlow = {
+    open: openConfirm,
+    close: closeConfirm,
+    confirm: performDelete,
+    expectedCode: () => expectedCode,
+    state: () => (el.pick.classList.contains("is-gone") ? "deleted" : "active"),
+  };
+
+  bindDeleteFlow();
+})();
+</script>
+</body>
+</html>

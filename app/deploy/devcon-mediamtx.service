@@ -1,0 +1,20 @@
+[Unit]
+Description=SpacemiT DevCon 2026 camera WebRTC media relay
+After=network-online.target
+Wants=network-online.target
+Before=devcon-booth.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/devcon/mediamtx
+ExecStart=/opt/devcon/mediamtx/mediamtx /opt/devcon/mediamtx/mediamtx.yml
+Restart=always
+RestartSec=2
+User=root
+Group=root
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=devcon-mediamtx
+
+[Install]
+WantedBy=multi-user.target

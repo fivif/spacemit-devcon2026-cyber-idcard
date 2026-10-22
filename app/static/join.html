@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F3F2EC">
+<!-- __BUILD__ 由服务端替换成页面版本（与其它页面一致）。
+     build-guard=manual：这是扫码进来的一次性页面，不自动刷新——
+     参与者可能正停在系统分享面板或相机权限弹窗上。 -->
+<meta name="build" content="__BUILD__">
+<meta name="build-guard" content="manual">
+<title>手机排队报名 · SpacemiT DevCon 2026</title>
+<link rel="icon" href="/static/assets/brand/spacemit-logo.svg?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/tokens.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/base.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/auto-flow.css?v=__BUILD__&amp;recovery=20261013-1&amp;optional=20261015-1">
+<link rel="stylesheet" href="/static/css/ui-polish.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/portrait-mode.css?v=__BUILD__">
+</head>
+<body data-af-page="join">
+<main class="af-joinpage" id="af-join">
+
+  <header class="af-head">
+    <span class="lockup">
+      <img class="mark" src="/static/assets/brand/spacemit-logo.svg?v=__BUILD__" alt="SpacemiT" width="26" height="33">
+      <span class="word"><b>SpacemiT</b><span>DevCon 2026</span></span>
+    </span>
+  </header>
+
+  <section class="af-title" aria-labelledby="af-join-heading">
+    <span class="tag" style="color:#72933b;font-size:11px;letter-spacing:.12em;">#SpacemiTDevCon</span>
+    <h1 id="af-join-heading">开发者证件照</h1>
+    <p>先阅读拍摄告知，再选择画风与填写信息。</p>
+  </section>
+
+  <section class="af-card" id="af-join-gate" aria-label="拍摄告知与AI生成标识">
+    <div class="af-consent" id="af-join-consent" aria-label="拍摄告知与同意"></div>
+    <section class="af-watermark-note" id="af-join-watermark-note" aria-labelledby="af-watermark-heading">
+      <h2 id="af-watermark-heading">AI 生成标识管理</h2>
+      <p>根据法律法规要求，本活动提供 AI 图像生成服务，可能导致公众混淆或误认的，应当在 AI 生成内容上添加显式标识，向公众进行提示。</p>
+      <p>你可以在下方管理照片中的 AI 生成标识。</p>
+      <p>AI 标识与活动水印独立；勾选时，无活动水印的下载图也会保留 AI 标识。</p>
+      <label class="af-watermark-choice"><input id="af-join-watermark" type="checkbox" checked>在照片上保留 AI 生成标识</label>
+      <p id="af-join-watermark-message" role="status" aria-live="polite"></p>
+    </section>
+  </section>
+
+  <!-- ============ 报名表单（未报名时显示） ============ -->
+  <section class="af-card" id="af-join-form" aria-labelledby="af-form-heading" hidden>
+    <span class="label" id="af-form-heading">选择一种风格</span>
+    <p class="portrait-mode-note">图片仅示意画风，人像模式另选。</p>
+
+    <input id="af-join-style" type="hidden" value="">
+    <div class="af-style-grid" id="af-join-styles" role="radiogroup" aria-label="选择拍摄风格"></div>
+    <p class="af-style-choice" id="af-join-style-choice" aria-live="polite">风格加载中…</p>
+    <fieldset class="portrait-mode" id="af-join-portrait-mode" hidden>
+      <legend>人像模式</legend>
+      <div class="portrait-mode-options">
+        <label><input type="radio" name="join_portrait_mode" value="chibi" checked>Q版大头像</label>
+        <label><input type="radio" name="join_portrait_mode" value="standard">写实版</label>
+      </div>
+      <p class="portrait-mode-note">每种画风都支持这两种模式。</p>
+    </fieldset>
+
+    <details class="af-inline" id="af-join-optional" open>
+      <summary><span>填写个人信息</span><small>选填</small></summary>
+      <p class="af-note">填写的姓名、昵称和账号也可能展示在照片上。</p>
+      <div class="af-form">
+        <label class="af-field"><span>姓名或昵称（选填）</span>
+          <input class="af-input" id="af-join-name" name="display_name" maxlength="24" placeholder="留空也可以" autocomplete="name">
+        </label>
+        <label class="af-field"><span>开发者 ID 或社交账号（选填）</span>
+          <input class="af-input" id="af-join-handle" name="developer_id" maxlength="32" placeholder="留空也可以" autocomplete="off" spellcheck="false">
+        </label>
+      </div>
+    </details>
+
+    <div class="af-actions">
+      <button class="btn btn-primary btn-lg" id="af-join-submit" type="button" disabled>加入排队</button>
+      <p class="af-message" id="af-join-message" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="af-card af-unavailable hide" id="af-join-unavailable" role="status" aria-live="polite"></section>
+
+  <!-- ============ 排队状态（提交成功或恢复会话后显示） ============ -->
+  <section class="af-card af-status-card hide" id="af-join-status" aria-labelledby="af-status-heading">
+    <span class="label" id="af-status-heading">我的排队</span>
+    <div class="af-number af-mono" id="af-join-number">—</div>
+    <p class="af-queue-status" id="af-join-state" data-af-tone="waiting">—</p>
+    <p class="af-note" id="af-join-detail">正在获取排队状态…</p>
+    <p class="af-deadline hide" id="af-join-deadline" aria-live="polite"></p>
+    <p class="af-note" id="af-join-hint"></p>
+    <!-- 取图入口（photo_token 只在 ready_for_pickup 且会话匹配时由后端下发） -->
+    <a class="btn btn-primary btn-lg hide" id="af-join-pickup" href="#">查看我的证件照</a>
+    <!-- 主操作紧跟状态；备用链接只是保险，放在最后 -->
+    <div class="af-actions">
+      <button class="btn btn-primary btn-lg hide" id="af-join-start" type="button">开始拍摄</button>
+      <button class="btn btn-ghost hide" id="af-join-reset" type="button">重新报名</button>
+      <button class="btn btn-ghost" id="af-join-abandon" type="button">放弃排队</button>
+    </div>
+    <p class="af-note" id="af-join-control-note">放弃后本页不再提醒，名额会在叫号超时后自动让给下一位。</p>
+    <div class="af-recovery hide" id="af-join-recovery">
+      <button class="btn btn-ghost" id="af-join-recovery-copy" type="button">保存我的拍摄链接</button>
+      <p class="af-note">关掉页面或换浏览器后，用它继续查看进度和取图。</p>
+      <details class="af-inline" id="af-join-recovery-details">
+        <summary>展开链接，手动复制</summary>
+        <label class="af-field"><span>我的拍摄链接（仅查看进度与取图）</span>
+          <input class="af-input" id="af-join-recovery-link" type="text" readonly autocomplete="off" spellcheck="false">
+        </label>
+      </details>
+      <p class="af-note" id="af-join-recovery-message" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <p class="af-note af-join-footer">照片在装置本机保存 1 天（24 小时），到期自动删除；只做人像分割，不做人脸识别。</p>
+</main>
+
+<noscript><p style="padding:16px;color:#9b322c;">需要开启 JavaScript 才能报名排队。请找现场工作人员协助。</p></noscript>
+
+<script src="/static/js/net.js?v=__BUILD__"></script>
+<script src="/static/auto-flow-messages.js?v=__BUILD__"></script>
+<script src="/static/auto-flow-consent.js?v=__BUILD__"></script>
+<script src="/static/auto-flow.js?v=__BUILD__&amp;recovery=20261013-1"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# 装置 5 · 赛博开发者证件照 —— 每 20 秒检查一次控制面
+#
+# 比进程内自愈慢得多，本来就是最后一道：进程内自愈会在几秒内把相机接回来，
+# 只有「进程自己卡死」才轮到这里。
+#
+#   systemctl enable --now devcon-booth-watchdog.timer
+#   systemctl list-timers devcon-booth-watchdog.timer --no-pager
+#   journalctl -u devcon-booth-watchdog -f
+
+[Unit]
+Description=SpacemiT DevCon 2026 装置5 · 每 20s 检查一次控制面（看门狗）
+
+[Timer]
+# 开机后等 90s 再开始看：给服务留出加载模型、拿 AI 核的时间
+OnBootSec=90
+OnUnitActiveSec=20
+AccuracySec=2s
+Unit=devcon-booth-watchdog.service
+
+[Install]
+WantedBy=timers.target

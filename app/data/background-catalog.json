@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "version": 1,
+  "backgrounds": [
+    {
+      "id": "light-film-tech",
+      "title": "晴空手绘",
+      "version": 1,
+      "light_theme": true,
+      "wide_prompt": "Premium light-colour illustrated conference portrait backdrop, 16:9 landscape. Warm off-white paper texture, airy sky blue and pale mint colour fields, soft hand-painted clouds and distant landscape. Reserve the left 46% as calm continuous space for one portrait. Place only a few playful RISC-V-inspired circuit tiles, wafer arcs and tiny geometric technology motifs in the right third, designed like refined editorial illustration rather than realistic hardware. No person and no readable text.",
+      "vertical_prompt": "Premium light-colour illustrated conference portrait backdrop, 2:3 vertical. Warm off-white paper texture with airy sky blue, pale mint and restrained coral accents. Keep the central 80% calm and continuous for one large portrait. Decorative technology motifs are sparse, small and limited to the outer corners; total decorative coverage below 12%. No person and no readable text.",
+      "negative_prompt": "No people, face, body, text, letters, numbers, logo, watermark, border, card frame, photo frame, white rectangle, dark panel, realistic giant processor, busy code, dense props or heavy shadows.",
+      "safe_area": {
+        "wide": [70, 115, 720, 820],
+        "vertical": [100, 170, 924, 1340]
+      },
+      "preview_wide": "/assets/bg/devcon2026-light-film-wide-1600x900.png",
+      "preview_vertical": "/assets/bg/devcon2026-light-film-vertical.png",
+      "enabled": true
+    }
+  ]
+}

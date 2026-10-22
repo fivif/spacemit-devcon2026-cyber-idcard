@@ -1,0 +1,110 @@
+{
+  "at": "2026-09-14T23:30:45",
+  "count": 12,
+  "mock": false,
+  "success_rate": 0.0,
+  "median_s": null,
+  "ep_hits": 0,
+  "degraded": 0,
+  "failures": [
+    "第 1 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+    "第 2 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+    "第 3 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+    "第 4 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+    "第 5 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+    "第 6 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+    "第 7 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+    "第 8 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+    "第 9 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+    "第 10 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+    "第 11 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+    "第 12 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中"
+  ],
+  "infer_ms_median": null,
+  "warmup_ms": 30.5,
+  "results": [
+    {
+      "name": "服务在 120s 内就绪",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "预热完成（首个参会者不必等模型冷启动）",
+      "ok": true,
+      "detail": "预热 30 ms · AI 核 ep=False",
+      "warmup_ms": 30.5,
+      "ep": false
+    },
+    {
+      "name": "真实相机已识别",
+      "ok": false,
+      "detail": "/dev/video1 0x0 "
+    },
+    {
+      "name": "连拍成功率 >= 98%",
+      "ok": false,
+      "detail": "0/12 = 0.0%",
+      "success_rate": 0.0,
+      "failures": [
+        "第 1 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+        "第 2 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+        "第 3 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+        "第 4 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+        "第 5 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+        "第 6 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+        "第 7 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+        "第 8 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+        "第 9 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+        "第 10 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+        "第 11 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中",
+        "第 12 次：CameraError: 拍照失败：CameraError: 打不开 /dev/video1 / 重试仍失败：相机重连退避中"
+      ]
+    },
+    {
+      "name": "中位耗时 <= 35s / 人",
+      "ok": false,
+      "detail": "一次都没成功"
+    },
+    {
+      "name": "理论吞吐 >= 100 人/小时",
+      "ok": false,
+      "detail": "一次都没成功"
+    },
+    {
+      "name": "AI 核命中率（拿了多少张走 EP）",
+      "ok": null,
+      "detail": "0/0 张走 EP SpaceMIT · 0 张降级",
+      "ep_hits": 0,
+      "degraded": 0
+    },
+    {
+      "name": "四个页面 + 静态资源零外部依赖（断网可用）",
+      "ok": true,
+      "detail": "扫描 4 个页面与其静态资源",
+      "external_refs": []
+    },
+    {
+      "name": "彩排期间未同意拍摄仍被拦截（403）",
+      "ok": true,
+      "detail": "实际 403"
+    },
+    {
+      "name": "拿不到 AI 核时 ep=false 且给出原因",
+      "ok": true,
+      "detail": "ep=False ok=False 原因=FileNotFoundError: /opt/devcon/assets/models/mobileclip.q.onnx",
+      "degraded_ep": false,
+      "degraded_ok": false,
+      "degraded_reason": "FileNotFoundError: /opt/devcon/assets/models/mobileclip.q.onnx"
+    },
+    {
+      "name": "拿不到 AI 核也照常出图（不许空手离开）",
+      "ok": true,
+      "detail": "编号 SM-2026-0001 · ep=False · 推理 None ms",
+      "degraded_record": "SM-2026-0001",
+      "degraded_infer_ms": null
+    }
+  ],
+  "passed": 6,
+  "failed": 4,
+  "skipped": 1
+}

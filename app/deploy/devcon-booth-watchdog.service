@@ -1,0 +1,30 @@
+# 装置 5 · 赛博开发者证件照 —— 进程外看门狗（单次检查，由 .timer 每 20s 叫一次）
+#
+# 为什么需要它：进程内的相机自愈救不了「**进程自己卡死**」这一类故障 ——
+#   * 抓帧线程卡在内核里（V4L2 不返回）→ 进程内的重连逻辑根本轮不到执行；
+#   * HTTP 线程池被拖死：端口还 listen 着，但没人应答；
+#   * 死锁 / 内存耗尽。
+# 这些情况下 /api/health 拿不到、或 preview.seq 长时间不涨，进程自己不会好。
+# 判定与护栏（宁可不重启也不错杀）见 tools/watchdog.py 顶部注释。
+#
+# 装机位置：/etc/systemd/system/devcon-booth-watchdog.service
+#   install -m 0644 /opt/devcon/app/deploy/devcon-booth-watchdog.service /etc/systemd/system/
+#   install -m 0644 /opt/devcon/app/deploy/devcon-booth-watchdog.timer   /etc/systemd/system/
+#   systemctl daemon-reload && systemctl enable --now devcon-booth-watchdog.timer
+
+[Unit]
+Description=SpacemiT DevCon 2026 装置5 · 看门狗（单次检查控制面）
+After=devcon-booth.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/devcon/app
+ExecStart=/usr/bin/python3 /opt/devcon/app/tools/watchdog.py
+# 看门狗自己只读 /api/*，除了「判定为真卡死」以外不发任何指令；
+# 判定后也只 systemctl restart devcon-booth，不会另起一个服务（两个进程抢相机更糟）。
+User=root
+Environment=BOOTH_PORT=8090
+# 想先观察一段时间再让它动手：Environment=BOOTH_WATCHDOG_DRYRUN=1
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=devcon-watchdog

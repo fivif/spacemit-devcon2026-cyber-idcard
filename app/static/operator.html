@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f5f6f8">
+<meta name="build" content="__BUILD__">
+<meta name="build-guard" content="auto">
+<title>现场管理 · SpacemiT DevCon 2026</title>
+<link rel="icon" href="/static/assets/brand/spacemit-logo.svg?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/tokens.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/base.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/operator.css?v=__BUILD__">
+</head>
+<body class="operator">
+<a class="skip-link" href="#operator-main">跳到操作区</a>
+<div class="operator-layout">
+  <aside class="sidebar">
+    <a class="operator-brand" href="/operator" aria-label="SpacemiT 现场管理总览">
+      <img src="/static/assets/brand/spacemit-logo.svg?v=__BUILD__" alt="" width="28" height="36">
+      <span><strong>SpacemiT</strong><small>DevCon 2026 · 现场管理</small></span>
+    </a>
+    <nav class="page-nav" aria-label="后台导航">
+      <a href="/operator" data-page-link="overview">总览</a>
+      <a href="/operator/queue" data-page-link="queue">排队管理</a>
+      <a href="/operator/photos" data-page-link="photos">成片管理</a>
+      <a href="/operator/styles" data-page-link="styles">风格管理</a>
+      <a href="/operator/models" data-page-link="models">生图渠道</a>
+      <a href="/operator/settings" data-page-link="settings">设置</a>
+      <a href="/operator/system" data-page-link="system">设备与维护</a>
+    </nav>
+    <div class="sidebar-links">
+      <a href="/" target="_blank" rel="noopener">打开拍摄位 ↗</a>
+      <a href="/stage" target="_blank" rel="noopener">打开现场大屏 ↗</a>
+    </div>
+  </aside>
+  <main class="shell-op" id="operator-main" tabindex="-1">
+    <header class="opbar">
+      <div><h1 id="page-title">现场管理</h1><p class="hint" id="page-description" hidden></p></div>
+      <span class="badge" id="badge-ep" role="status">等待加载</span>
+    </header>
+    <p id="page-error" class="feedback" role="alert" hidden></p>
+
+    <section data-page="overview" class="page-section" hidden aria-labelledby="overview-title">
+      <h2 id="overview-title" class="sr-only">总览</h2>
+      <div class="panel overview-status">
+        <h2>现场运行情况</h2>
+        <div id="overview-state" class="kvs"><p class="hint">正在读取现场状态…</p></div>
+        <a class="text-link" href="/operator/system">查看设备与维护</a>
+      </div>
+      <div class="overview-links">
+        <a href="/operator/queue"><strong>排队管理</strong></a>
+        <a href="/operator/photos"><strong>成片管理</strong></a>
+        <a href="/operator/styles"><strong>风格管理</strong></a>
+      </div>
+    </section>
+
+    <section data-page="queue" class="page-section" hidden aria-labelledby="queue-admin-title">
+      <div class="panel">
+        <div class="row-between"><h2 id="queue-admin-title">当前排队</h2><span class="badge" id="queue-admin-count">读取中</span></div>
+        <p class="hint" id="queue-admin-note" hidden></p>
+        <div class="queue-admin-list" id="queue-admin-list"></div>
+      </div>
+    </section>
+
+    <section data-page="photos" class="page-section" hidden aria-labelledby="photos-title">
+      <section class="panel operator-upload-panel" aria-labelledby="operator-upload-title">
+        <div class="row-between">
+          <div><h2 id="operator-upload-title">直接提交图片</h2></div>
+          <span class="badge" id="upload-badge">待提交</span>
+        </div>
+        <form id="operator-upload-form" class="upload-form">
+          <label class="upload-file"><span>图片</span><input id="upload-image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required><small id="upload-file-name" hidden></small><img id="upload-preview" alt="待提交的图片" hidden></label>
+          <div class="upload-fields">
+            <label><span>处理方式</span><select class="field" id="upload-mode" name="mode"><option value="aigc">AIGC 风格</option><option value="original">原图（不做 AIGC）</option></select></label>
+            <label id="upload-style-wrap"><span>AIGC 风格</span><select class="field" id="upload-style" name="style"><option value="">读取中…</option></select></label>
+            <label><span>版式</span><select class="field" name="orientation"><option value="vertical">竖版</option><option value="wide">横版</option></select></label>
+            <label id="upload-portrait-wrap"><span>人像模式</span><select class="field" name="portrait_mode"><option value="standard">写实版</option><option value="chibi">Q版大头像</option></select></label>
+            <label><span>姓名（可选）</span><input class="field" name="name" maxlength="24" autocomplete="off"></label>
+            <label><span>开发者账号（可选）</span><input class="field" name="handle" maxlength="32" placeholder="例如 @xiaoman.dev" autocomplete="off"></label>
+          </div>
+          <label class="prompt-toggle"><input id="upload-ai-watermark" name="ai_watermark" type="checkbox" checked><span>AI 生成标识</span></label>
+          <p class="hint" id="upload-mode-hint" hidden></p>
+          <div class="row-between upload-actions"><p class="feedback" id="upload-result" role="status" aria-live="polite"></p><button class="btn btn-primary" id="upload-submit" type="submit" disabled>提交图片</button></div>
+        </form>
+      </section>
+      <section class="panel regenerate-panel" id="regenerate-panel" aria-labelledby="regenerate-title" hidden>
+        <div class="row-between"><h2 id="regenerate-title">重新生成</h2><span class="badge" id="regenerate-badge">待提交</span></div>
+        <p id="regenerate-source" class="hint"></p>
+        <p class="hint">使用保留的原片生成新成片，原片和已有成片保留。不会自动打印。渠道与模型按全局优先配置使用。</p>
+        <form id="regenerate-form" class="upload-form">
+          <div class="upload-fields">
+            <label><span>AIGC 风格</span><select class="field" id="regenerate-style" required></select></label>
+            <label><span>人像模式</span><select class="field" id="regenerate-portrait"><option value="standard">写实版</option><option value="chibi">Q版大头像</option></select></label>
+          </div>
+          <label class="prompt-toggle"><input id="regenerate-ai-watermark" type="checkbox" checked><span>AI 生成标识</span></label>
+          <div class="row-between upload-actions">
+            <p class="feedback" id="regenerate-result" role="status" aria-live="polite"></p>
+            <div class="maintenance-actions"><button class="btn btn-ghost" id="regenerate-cancel" type="button">取消</button><button class="btn" id="regenerate-reload" type="button" hidden>重试读取风格</button><button class="btn btn-primary" id="regenerate-submit" type="submit" disabled>重新生成</button></div>
+          </div>
+        </form>
+      </section>
+      <div class="row-between"><h2 id="photos-title">最近成片</h2><span class="hint" id="shots-count">读取中</span></div>
+      <div class="shots" id="shots"></div>
+    </section>
+
+    <section data-page="styles" class="page-section" hidden aria-labelledby="styles-title">
+      <div class="row-between">
+        <h2 id="styles-title">风格目录 <span class="badge" id="aigc-badge">读取中</span></h2>
+        <button class="btn btn-primary" id="aigc-add" type="button" disabled>新增风格</button>
+      </div>
+      <div class="style-toolbar">
+        <label class="search-label" for="style-search"><span class="sr-only">搜索风格</span><input class="field" id="style-search" type="search" placeholder="搜索名称或说明" autocomplete="off"></label>
+        <div class="filter-label"><label for="style-filter">显示</label><select class="field" id="style-filter"><option value="all">全部风格</option><option value="enabled">已启用</option><option value="disabled">已停用</option></select></div>
+        <button class="btn btn-ghost" id="style-reload" type="button">刷新目录</button>
+      </div>
+      <p class="feedback" id="aigc-result" role="status" aria-live="polite"></p>
+      <div class="style-list panel" id="aigc-styles" aria-busy="true"></div>
+      <dialog class="style-dialog" id="style-dialog" aria-labelledby="style-dialog-title">
+        <form id="style-form">
+          <div class="row-between"><h2 id="style-dialog-title">编辑风格</h2><button class="btn btn-ghost" id="style-close" type="button">关闭</button></div>
+          <div id="style-editor" class="editor-body"></div>
+          <p id="style-editor-result" class="feedback" role="status" aria-live="polite"></p>
+          <div class="dialog-footer"><button class="btn btn-ghost" id="style-cancel" type="button">取消</button><button class="btn btn-primary" id="style-save" type="submit">保存风格</button></div>
+        </form>
+      </dialog>
+    </section>
+
+    <section data-page="settings" class="page-section" hidden aria-labelledby="settings-title">
+      <h2 id="settings-title" class="sr-only">设置</h2>
+      <div class="panel">
+        <div class="row-between"><h2>取图地址</h2><span class="badge" id="cfg-badge">读取中</span></div>
+        <label for="cfg-base">公网取图地址</label>
+        <div class="cfg-row">
+          <input class="field" id="cfg-base" type="url" inputmode="url" spellcheck="false" name="public_base" autocomplete="off" placeholder="https://pick.example.com">
+          <button class="btn btn-primary" id="cfg-save" type="button" disabled>保存地址</button>
+          <button class="btn" id="cfg-test" type="button">检查连接</button>
+          <button class="btn btn-ghost" id="cfg-clear" type="button" disabled>使用现场地址</button>
+        </div>
+        <div class="kvs" id="kv-config"></div><div class="qr-check" id="qr-check"></div>
+        <p class="feedback" id="cfg-result" role="status" aria-live="polite"></p>
+      </div>
+      <div class="panel">
+        <div class="row-between"><h2>现场展示模式</h2><span class="badge" id="cfg-presentation-badge">读取中</span></div>
+        <label class="prompt-toggle"><input id="cfg-handoff" type="checkbox"><span>启用后台生成</span></label>
+        <p class="hint">开启后，AIGC 开始 8 秒后大屏提示并回到预览，生成继续在后台进行；手机页面持续显示生成状态。</p>
+        <div class="row-between cfg-presentation-actions">
+          <p class="feedback" id="cfg-presentation-result" role="status" aria-live="polite"></p>
+          <button class="btn btn-primary" id="cfg-presentation-save" type="button" disabled>保存展示模式</button>
+        </div>
+      </div>
+      <details class="panel notice-panel">
+        <summary>现场拍摄告知</summary>
+        <div class="notice"><div class="print" id="operator-notice">拍摄告知暂未加载，请查看拍摄页面或联系现场工作人员。</div></div>
+      </details>
+    </section>
+
+    <section data-page="models" class="page-section" hidden aria-labelledby="models-title">
+      <div class="panel channel-admin">
+        <div class="row-between"><h2 id="models-title">生图渠道</h2><span class="badge" id="channel-count">读取中</span></div>
+        <div class="channel-policy">
+          <p id="channel-active" role="status" aria-live="polite">正在读取竞速配置…</p>
+          <p class="hint">按优先级确定模型；仅配置了同一模型的可用渠道并发请求，先成功的渠道出片。</p>
+        </div>
+        <div class="channel-list" id="aigc-channels" aria-busy="true"></div>
+        <div class="channel-actions">
+          <div class="maintenance-actions"><button class="btn" id="channel-add" type="button" disabled>新增渠道</button><button class="btn" id="channel-check" type="button" disabled>立即检查</button><button class="btn btn-ghost" id="channel-reload" type="button">重新读取</button></div>
+          <div class="channel-save-group"><span class="hint" id="channel-dirty" role="status" aria-live="polite">尚未读取</span><button class="btn btn-primary" id="channel-save" type="button" disabled>保存渠道</button></div>
+        </div>
+        <p class="feedback" id="channel-result" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section data-page="system" class="page-section" hidden aria-labelledby="system-title">
+      <h2 id="system-title" class="sr-only">设备与维护</h2>
+      <div class="system-grid">
+        <div class="panel"><h2>相机</h2><div class="kvs" id="kv-camera"></div></div>
+        <div class="panel"><h2>人像处理</h2><div class="kvs" id="kv-infer"></div></div>
+        <div class="panel"><h2>存储与编号</h2><div class="kvs" id="kv-store"></div></div>
+        <div class="panel"><h2>最近处理</h2><div class="steps" id="steps"></div><div class="kvs" id="kv-last"></div><h3>异常记录</h3><div class="kvs" id="kv-degraded"></div></div>
+      </div>
+      <div class="panel">
+        <h2>现场维护</h2>
+        <div class="maintenance-actions"><button class="btn btn-primary" id="restore" type="button">恢复到就绪</button><button class="btn" id="usb-reset" type="button">重新连接相机</button><button class="btn" id="purge" type="button">清理过期照片</button></div>
+        <details class="danger-zone"><summary>彩排清场</summary><button class="btn btn-danger" id="reset" type="button">清空成片与编号</button></details>
+        <p class="feedback" id="op-result" role="status" aria-live="polite"></p>
+      </div>
+      <p class="hint" id="build-note" hidden></p>
+    </section>
+  </main>
+</div>
+<script src="/static/js/net.js?v=__BUILD__"></script>
+<script src="/static/auto-flow-consent.js?v=__BUILD__"></script>
+<script src="/static/js/operator.js?v=__BUILD__"></script>
+</body>
+</html>

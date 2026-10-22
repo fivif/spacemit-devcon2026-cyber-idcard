@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F1F0EA">
+<title>竖屏预览 · SpacemiT DevCon 2026</title>
+<!-- 竖屏显示器的独立预览页（与 /stage 横屏算力视图分工）：
+     竖版 9:16 取景为主位，无人时风格轮播，有人靠近自动唤醒；
+     拍摄时倒计时 / 抠像动效 / 成片展示都在这块屏上；右下角小件读数。
+     无人值守：__BUILD__ 换成页面版本，页面自己对 /api/build 过期自刷新。 -->
+<meta name="build" content="__BUILD__">
+<meta name="build-guard" content="auto">
+<link rel="icon" href="/static/assets/brand/spacemit-logo.svg?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/tokens.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/base.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/stage.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/vertical.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/create-scene.css?v=__BUILD__">
+<link rel="stylesheet" href="/static/css/ui-polish.css?v=__BUILD__">
+</head>
+<body class="vstage">
+<div class="stage vstage-root">
+
+  <header class="stagebar vbar">
+    <span class="lockup event-lockup">
+      <img class="mark" src="/static/assets/brand/spacemit-logo.svg?v=__BUILD__" alt="SpacemiT" width="26" height="33">
+      <span class="event-brand-copy">
+        <span class="event-brand-name">SpacemiT</span>
+        <span class="event-wordmark" aria-label="DevCon 2026"><span class="event-title">DevCon</span><span class="event-year">2026</span></span>
+      </span>
+    </span>
+    <span class="spacer"></span>
+    <span class="badge" id="badge-ep">拍摄就绪</span>
+  </header>
+
+  <main class="vmain">
+    <section class="view is-idle" id="view">
+      <video class="preview preview-video mirror-x" id="preview-stream" autoplay muted playsinline disablepictureinpicture aria-label="实时取景"></video>
+      <img class="preview preview-static mirror-x" id="preview" alt="实时取景">
+      <img class="mask mirror-x" id="mask" alt="">
+      <canvas class="boxes" id="boxes"></canvas>
+      <div class="scan"></div>
+      <div class="camstate" id="camstate" aria-live="polite"></div>
+      <div class="statusline">
+        <span class="badge" id="badge-now">待机</span>
+      </div>
+
+      <!-- 待机层：无人时的默认画面（风格轮播 + 欢迎语）。有人走近整体退场。 -->
+      <div class="idle-show" id="idle-show">
+        <div class="idle-slides">
+          <img class="idle-slide" id="idle-slide" alt="风格示意" decoding="async">
+          <div class="idle-slide-meta">
+            <span class="idle-slide-label" id="idle-slide-label">风格示意</span>
+            <span class="idle-slide-dots" id="idle-slide-dots" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="vcore" id="v-core" aria-hidden="true">
+        <div class="vcore-space" aria-hidden="true">
+          <div class="vcore-light"></div>
+          <div class="vcore-wafer"><div class="vcore-wafer-grid"></div></div>
+          <div class="vcore-traces"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="vcore-chip" aria-hidden="true">
+          <div class="vcore-chip-flow"></div>
+          <div class="vcore-chip-label"><small>SpacemiT K3</small><span>RISC-V</span></div>
+          <div class="vcore-chip-cores"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+        <img class="vcore-image vcore-capture" id="v-core-capture" alt="本次抓拍照片">
+        <div class="vcore-segmentation" id="v-core-segmentation" aria-hidden="true"></div>
+        <div class="vcore-particle-field" id="v-core-particle-field" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="vcore-contour-particles" id="v-core-contour-particles" aria-hidden="true"></div>
+        <div class="vcore-subject-frame" id="v-core-subject-frame" aria-hidden="true"><span>K3 已选主体</span></div>
+        <div class="vcore-reveal" aria-hidden="true"></div>
+        <div class="vcore-generation" aria-hidden="true"><span></span><span></span><span></span></div>
+        <img class="vcore-image vcore-cutout" id="v-core-cutout" alt="已分离背景的人像">
+        <img class="vcore-image vcore-result" id="v-core-result" alt="生成的风格人像">
+        <div class="vcore-shade" aria-hidden="true"></div>
+        <div class="vcore-head">
+          <span class="vcore-engine" id="v-core-engine"></span>
+          <span class="vcore-style" id="v-core-style"></span>
+          <span class="vcore-mode" id="v-core-mode"></span>
+          <span class="vcore-signature" aria-hidden="true">
+            <img src="/static/assets/brand/spacemit-logo.svg?v=__BUILD__" alt="" width="27" height="34">
+            <span>SpacemiT</span>
+          </span>
+        </div>
+        <div class="vcore-bottom">
+          <div class="vcore-status">
+            <span class="vcore-lens" aria-hidden="true"></span>
+            <p class="vcore-caption" id="v-core-caption" role="status" aria-live="polite">正在定格这一刻</p>
+          </div>
+          <p class="vcore-detail" id="v-core-detail"></p>
+          <span class="vcore-elapsed" id="v-core-elapsed" hidden></span>
+          <div class="vcore-steps" aria-label="制作进度">
+            <span class="vcore-step" data-create-step>分离人像</span>
+            <span class="vcore-step" data-create-step>风格生成</span>
+            <span class="vcore-step" data-create-step>完成排版</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 大字提示：到号 / 等 OK 手势 / 倒计时，站在一两米外也要看得清 -->
+      <div class="vprompt" id="vprompt" aria-live="polite">
+        <span class="vprompt-kicker mono" id="vprompt-kicker"></span>
+        <b class="vprompt-title" id="vprompt-title"></b>
+        <span class="vprompt-sub" id="vprompt-sub"></span>
+      </div>
+
+      <!-- 抠像阶段隔离层：inferring 时亮起 -->
+      <div class="matting" id="matting" aria-hidden="true">
+        <div class="cutout-stage" aria-hidden="true">
+          <div class="cutout-grid"></div>
+          <div class="cutout-silhouette"></div>
+          <div class="cutout-scanline"></div>
+          <div class="cutout-particles"></div>
+        </div>
+        <div class="matting-badge">
+          <span class="matting-chip">人像分离</span>
+          <span class="matting-caption" id="matte-caption">正在保留你的轮廓</span>
+        </div>
+      </div>
+      <div class="style-stage" id="style-stage" aria-hidden="true">
+        <div class="style-orbit style-orbit-a"></div>
+        <div class="style-orbit style-orbit-b"></div>
+        <div class="style-core"><span></span></div>
+        <img class="style-preview" id="style-preview" alt="正在生成的风格人像" decoding="async">
+        <div class="style-stage-copy" id="style-stage-copy">正在把人像画成所选风格</div>
+      </div>
+
+      <!-- 拍摄倒计时与闪光（与拍摄位同一套视觉语言） -->
+      <div class="countdown" id="countdown" aria-hidden="true"></div>
+      <div class="flash" id="flash" aria-hidden="true"></div>
+
+      <!-- 成片展示层：拍完在这块竖屏上先给本人看 -->
+      <div class="vresult" id="vresult" aria-live="polite">
+        <img class="vresult-shot" id="vresult-shot" alt="你的证件照">
+        <div class="vresult-meta">
+          <span class="vresult-serial mono" id="vresult-serial">0000</span>
+          <span class="vresult-note" id="vresult-portrait-mode">写实版</span>
+          <span class="vresult-note">在手机上查看与保存</span>
+        </div>
+      </div>
+    </section>
+
+    <footer class="vfoot" aria-label="现场提示">
+      <span class="vtip" id="vtip"></span>
+      <span class="vcount" id="m-count">已出图 0</span>
+    </footer>
+  </main>
+
+  <footer class="stagefoot vfootline">
+    <span class="lockup foot-lockup">
+      <img class="mark" src="/static/assets/brand/spacemit-logo.svg?v=__BUILD__" alt="" width="22" height="28">
+      <span class="word"><b>RISC-V AI CPU</b><span>spacemit.com</span></span>
+    </span>
+    <span class="spacer"></span>
+    <span id="foot-note">成片保存 1 天 · 取图页可随时删除</span>
+  </footer>
+</div>
+
+<script src="/static/js/net.js?v=__BUILD__"></script>
+<script src="/static/js/create-scene.js?v=__BUILD__"></script>
+<script src="/static/js/vertical.js?v=__BUILD__"></script>
+</body>
+</html>
+

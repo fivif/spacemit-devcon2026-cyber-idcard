@@ -1,0 +1,674 @@
+/* auto-flow.css —— 自动流程前端样式（T-4）：入口轮播 / 手机报名 / 排队状态。
+ *
+ * 只服务 .af-* 类名，不改动任何既有选择器；与 booth.css 的浅色主题同一套色板
+ * （底 #F3F2EC、卡片 #FFFDF9、主文字 #1B2832、次级 #78827F、品牌绿 #82AD38）。
+ * 无外部字体、无 CDN：字体走 tokens.css 的系统字体栈，缺失时回落系统默认。
+ * 手机页 join.html 以窄屏为第一目标（max-width 560px 居中），入口页在面板内纵向排。
+ */
+
+/* ---------- 通用 ---------- */
+
+.af-note {
+  color: #78827f;
+  font: var(--sm-typo-body-small, 400 12px/16px system-ui, sans-serif);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.af-mono { font-family: var(--sm-font-mono, ui-monospace, Consolas, monospace); }
+
+.af-status,
+.af-message {
+  min-height: 18px;
+  color: #4d5a5e;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.af-status[data-af-tone="ok"],
+.af-message[data-af-tone="ok"] { color: #4d711e; }
+.af-status[data-af-tone="error"],
+.af-message[data-af-tone="error"] { color: #9b322c; }
+.af-status[data-af-tone="warn"],
+.af-message[data-af-tone="warn"] { color: #8a6414; }
+.af-status[data-af-tone="busy"],
+.af-message[data-af-tone="busy"] { color: #526169; }
+
+.af-form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.af-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.af-field > span {
+  color: #43545c;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+}
+
+.af-input,
+.af-select {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: var(--sm-radius-sm, 12px);
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px #26323b26;
+  color: #1b2832;
+  font: var(--sm-typo-body-medium, 400 14px/20px system-ui, sans-serif);
+}
+
+.af-input:focus-visible,
+.af-select:focus-visible {
+  outline: 2px solid #82ad38;
+  outline-offset: 1px;
+}
+
+.af-input::placeholder { color: #a7b0ad; }
+
+/* ---------- 入口页：整段卡片 ---------- */
+
+.af-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 4px;
+  padding-top: 16px;
+  border-top: 1px dashed #26323b26;
+}
+
+.direct-capture {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #26323b18;
+}
+
+.af-unavailable {
+  padding: 14px;
+  border-radius: 12px;
+  background: #f8eee7;
+  color: #7d4a2f;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.af-entry.is-unavailable .af-join,
+.af-entry.is-unavailable .af-inline,
+.af-entry.is-unavailable .af-queue { display: none; }
+
+.af-entry-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 22px;
+}
+
+.af-entry-head .label { color: #43545c; font-size: 13px; font-weight: 650; letter-spacing: 0.05em; }
+
+/* ---------- 轮播（展示区只动自己） ---------- */
+
+.af-carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.af-carousel-viewport {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #eef0e9;
+  box-shadow: inset 0 0 0 1px #26323b14;
+  aspect-ratio: 16 / 9;
+}
+
+.af-carousel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  animation: af-carousel-in 420ms ease-out;
+}
+
+@keyframes af-carousel-in {
+  from { opacity: 0.35; transform: scale(1.012); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .af-carousel-img { animation: none; }
+}
+
+.af-carousel-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #78827f;
+  font-size: 13px;
+}
+
+.af-carousel-caption {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-height: 20px;
+}
+
+.af-carousel-caption strong { color: #1b2832; font-size: 14px; }
+.af-carousel-caption small { color: #869096; font-size: 12px; line-height: 1.4; }
+
+.af-carousel-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.af-carousel-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border-radius: 999px;
+  background: #c6cdc3;
+  transition: background 160ms ease-out, width 160ms ease-out;
+}
+
+.af-carousel-dot.is-active {
+  width: 22px;
+  background: #82ad38;
+}
+
+/* ---------- 报名二维码 ---------- */
+
+.af-join {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px;
+  border-radius: 16px;
+  background: #f7f8f2;
+  box-shadow: inset 0 0 0 1px #26323b14;
+}
+
+.af-join-qr {
+  flex: none;
+  width: 132px;
+}
+
+.af-join-qr img {
+  width: 132px;
+  height: 132px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #26323b1a;
+}
+
+.af-join-fallback {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #d8ad8559;
+}
+
+.af-join-url {
+  margin: 0;
+  color: #1b2832;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.af-join-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.af-join-copy strong { color: #1b2832; font-size: 15px; }
+
+/* ---------- 入口页内嵌报名表 ---------- */
+
+.af-inline summary {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  cursor: pointer;
+  color: #43545c;
+  font-weight: 650;
+  font-size: 13px;
+  list-style: none;
+}
+
+.af-inline summary::-webkit-details-marker { display: none; }
+
+.af-inline summary::before {
+  content: "＋";
+  color: #82ad38;
+  font-weight: 700;
+}
+
+.af-inline[open] summary::before { content: "－"; }
+
+.af-inline summary small { color: #8b9693; font-weight: 400; }
+
+#af-join-optional summary small {
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: #edf3df;
+  color: #496321;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.af-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #fbfbf7;
+  box-shadow: inset 0 0 0 1px #26323b14;
+}
+
+/* ---------- 排队状态卡片 ---------- */
+
+.af-queue {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 16px;
+  background: #f6fbe9;
+  box-shadow: inset 0 0 0 1px #b9d77a80;
+}
+
+.af-queue-number {
+  color: #33530f;
+  font-size: 30px;
+  letter-spacing: 0.06em;
+}
+
+.af-queue-status {
+  margin: 0;
+  color: #31402f;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.af-queue-status[data-af-tone="error"] { color: #9b322c; }
+.af-queue-status[data-af-tone="called"] { color: #1f5f18; }
+
+/* ---------- 手机页 join.html ---------- */
+
+.af-joinpage {
+  width: min(560px, 100%);
+  margin: 0 auto;
+  padding: 16px 14px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.af-joinpage .af-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.af-joinpage .af-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.af-joinpage .af-title h1 {
+  margin: 0;
+  color: #1b2832;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.af-joinpage .af-title p {
+  margin: 0;
+  color: #78827f;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.af-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
+  background: #fffdf9;
+  box-shadow: 0 10px 30px #30434d12, inset 0 0 0 1px #26323b14;
+}
+
+.af-card > .label { color: #43545c; font-weight: 650; }
+
+.af-style-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.af-style-card {
+  position: relative;
+  min-width: 0;
+  min-height: 118px;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid #26323b20;
+  border-radius: 8px;
+  background: #edf0e7;
+  color: #1b2832;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.af-style-card:focus-visible {
+  outline: 2px solid #82ad38;
+  outline-offset: 2px;
+}
+
+.af-style-card:active { transform: scale(.985); }
+
+.af-style-card.is-selected {
+  border-color: #6f9630;
+  box-shadow: 0 0 0 2px #82ad3852;
+}
+
+.af-style-card.is-selected::after {
+  content: "已选";
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: #405d16;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.af-style-card-visual {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-height: 118px;
+  place-items: end start;
+  overflow: hidden;
+  background: #e6ebdc;
+}
+
+.af-style-card:nth-child(2n) .af-style-card-visual { background: #e9edf2; }
+.af-style-card:nth-child(3n) .af-style-card-visual { background: #f0e9df; }
+
+.af-style-card-visual img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.af-style-card-label {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 26px 10px 10px;
+  color: #1b2832;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.af-style-card.has-image .af-style-card-label {
+  color: #fff;
+  text-shadow: 0 1px 3px #000a;
+  background: #18221b82;
+}
+
+.af-style-choice {
+  min-height: 20px;
+  margin: 0;
+  color: #62706a;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.af-joinpage .af-style-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.af-joinpage .af-style-preview img {
+  width: 72px;
+  height: 72px;
+  flex: none;
+  border-radius: 12px;
+  object-fit: cover;
+  background: #eef0e9;
+  box-shadow: inset 0 0 0 1px #26323b14;
+}
+
+.af-joinpage .af-style-preview strong { color: #1b2832; font-size: 15px; }
+
+.af-consent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #fbfbf7;
+  box-shadow: inset 0 0 0 1px #26323b14;
+}
+
+.af-consent-compact { padding: 10px 12px; }
+.af-consent-compact h2 { font-size: 13px; }
+.af-consent-compact ul, .af-consent-compact ol { margin: 6px 0 10px; padding-left: 18px; }
+.af-consent-compact li { margin: 3px 0; }
+.af-consent-compact > div { display: flex; gap: 8px; }
+.af-consent-compact > div button { min-height: 40px; flex: 1; }
+/* 同意按钮字多，给它更宽的一份且不折行（窄屏上曾折成「…同意拍」「摄」两行） */
+.af-consent-compact > div button:first-child { flex: 1.7; white-space: nowrap; }
+
+/* 同意之后：标题旁出现「已同意」，按钮改成已选中的描边样式 */
+.af-consent.is-granted h2::after {
+  content: "已同意";
+  margin-left: 8px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #405d16;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 650;
+  vertical-align: 1px;
+}
+.af-consent.is-granted > div button:first-child {
+  background: #f2f7e8;
+  color: #405d16;
+  box-shadow: inset 0 0 0 1.5px #6f9630;
+}
+
+/* 到号倒计时：剩余秒数要一眼看到 */
+.af-deadline { margin: 10px 0 4px; color: #405d16; font-size: 15px; font-weight: 600; }
+.af-deadline b { margin-right: 2px; font-size: 30px; font-weight: 750; font-variant-numeric: tabular-nums; }
+
+/* 拍摄与生成中：一条缓慢流动的进度条，告诉人「没卡住」；减少动态时只留静态条 */
+.af-status-card[data-af-status="capturing"] #af-join-detail::after,
+.af-status-card[data-af-status="processing"] #af-join-detail::after {
+  content: "";
+  display: block;
+  height: 4px;
+  margin-top: 12px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #dfe9cc 0%, #8fb648 50%, #dfe9cc 100%);
+  background-size: 200% 100%;
+  animation: af-progress 1.6s linear infinite;
+}
+@keyframes af-progress { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .af-status-card[data-af-status] #af-join-detail::after { animation: none; background: #b9d27f; }
+}
+
+.af-consent h2 {
+  margin: 0;
+  color: #1b2832;
+  font-size: 15px;
+}
+
+.af-consent ul,
+.af-consent ol {
+  margin: 0;
+  padding-left: 18px;
+  color: #52616a;
+  font-size: 12.5px;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.af-consent > p {
+  margin: 0;
+  color: #52616a;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.af-consent > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.af-consent button {
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: var(--sm-radius-sm, 12px);
+  background: #82ad38;
+  color: #fff;
+  font-weight: 650;
+  font-size: 14px;
+}
+
+.af-consent button + button {
+  background: transparent;
+  color: #52616a;
+  box-shadow: inset 0 0 0 1px #26323b26;
+}
+
+.af-consent button[disabled] { opacity: 0.55; pointer-events: none; }
+
+.af-status-card .af-number {
+  color: #33530f;
+  font-size: 34px;
+  letter-spacing: 0.06em;
+}
+
+.af-joinpage .af-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.af-joinpage .af-actions .btn { width: 100%; }
+
+.af-push-note {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f4f4ee;
+  color: #5c6a63;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.af-join-footer { padding: 0 2px; }
+
+.af-joinpage [hidden] { display: none !important; }
+#af-join-gate .af-consent { padding: 0; background: transparent; box-shadow: none; }
+.af-watermark-note { padding-top: 14px; border-top: 1px solid #26323b26; }
+.af-watermark-note h2 { margin: 0 0 8px; font-size: 15px; }
+.af-watermark-note p { margin: 6px 0; color: #52616a; font-size: 13px; line-height: 1.6; }
+.af-watermark-choice { display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 14px; cursor: pointer; }
+.af-watermark-choice input { width: 20px; height: 20px; flex-shrink: 0; accent-color: #72933b; }
+.af-watermark-choice input:focus-visible { outline: 2px solid #405d16; outline-offset: 3px; }
+#af-join-gate button:focus-visible { outline: 2px solid #405d16; outline-offset: 3px; }
+#af-join-watermark-message:empty { display: none; }
+
+.af-recovery {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #26323b18;
+}
+
+.af-recovery > .btn {
+  min-height: 44px;
+  align-self: flex-start;
+  transition: transform 160ms cubic-bezier(.23, 1, .32, 1);
+}
+
+.af-recovery > .btn:active { transform: scale(.97); }
+.af-recovery summary { min-height: 44px; align-items: center; }
+.af-recovery .af-field { margin-top: 4px; }
+.af-recovery .af-input { min-width: 0; font-size: 16px; }
+#af-join-recovery-message:empty { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .af-recovery > .btn { transition: none; }
+  .af-recovery > .btn:active { transform: none; }
+}
+
+@media (min-width: 721px) {
+  .af-entry { order: -1; }
+}
+
+@media (max-width: 560px) {
+  .af-joinpage { padding: 12px 12px 28px; gap: 10px; }
+  .af-joinpage .af-title h1 { font-size: 22px; }
+  .af-joinpage .af-title p { display: none; }
+  .af-push-note { padding: 8px 10px; font-size: 12px; }
+  .af-card { padding: 12px; border-radius: 12px; gap: 8px; }
+  .af-joinpage .af-style-preview { gap: 8px; }
+  .af-joinpage .af-style-preview img { width: 56px; height: 56px; border-radius: 8px; }
+  .af-joinpage .af-style-preview p { display: none; }
+  .af-consent-compact { margin-top: 2px; }
+  .af-consent-compact li { font-size: 12px; }
+  .af-joinpage .af-actions .btn { min-height: 46px; }
+  .af-style-grid { gap: 8px; }
+  .af-style-card, .af-style-card-visual { min-height: 108px; }
+}
+
+/* 窄屏：入口页的二维码与轮播排成单列 */
+@media (max-width: 720px) {
+  .af-join { flex-direction: column; }
+  .af-join-qr { width: 100%; }
+}
